@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -14,7 +15,8 @@ class ClienteController extends Controller
         $query = Cliente::query();
 
         if ($request->filled('search')) {
-            $query->where('nombre', 'like', "%{$request->search}%")
+            $query->where('nombre_razon_social', 'like', "%{$request->search}%")
+                ->orWhere('numero_documento', 'like', "%{$request->search}%")
                 ->orWhere('email', 'like', "%{$request->search}%");
         }
 
@@ -32,7 +34,7 @@ class ClienteController extends Controller
     public function store(Request $request)
     {
     // Validación
-        $request['user_id'] = auth()->id();
+        $request['user_id'] = Auth::id();
 
         $validated = $request->validate([
             'tipo_documento' => ['required', Rule::in(['CI', 'NIT'])],

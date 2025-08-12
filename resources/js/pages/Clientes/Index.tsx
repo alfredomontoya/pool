@@ -5,6 +5,9 @@ import { BreadcrumbItem } from "@/types";
 
 interface Cliente {
   id: number;
+  tipo_documento: string;
+  tipo: string;
+  numero_documento: string;
   nombre_razon_social: string;
   email: string;
   telefono: string;
@@ -68,6 +71,9 @@ export default function Index({ clientes, filters }: Props) {
           <thead>
             <tr className="bg-gray-100">
               <th className="p-2 border">ID</th>
+              <th className="p-2 border">Tipo de Documento</th>
+              <th className="p-2 border">Tipo</th>
+              <th className="p-2 border">Número de Documento</th>
               <th className="p-2 border">Nombre</th>
               <th className="p-2 border">Email</th>
               <th className="p-2 border">Teléfono</th>
@@ -79,6 +85,9 @@ export default function Index({ clientes, filters }: Props) {
             {clientes.data.map((cliente) => (
               <tr key={cliente.id}>
                 <td className="p-2 border">{cliente.id}</td>
+                <td className="p-2 border">{cliente.tipo_documento}</td>
+                <td className="p-2 border">{cliente.tipo}</td>
+                <td className="p-2 border">{cliente.numero_documento}</td>
                 <td className="p-2 border">{cliente.nombre_razon_social}</td>
                 <td className="p-2 border">{cliente.email}</td>
                 <td className="p-2 border">{cliente.telefono}</td>
