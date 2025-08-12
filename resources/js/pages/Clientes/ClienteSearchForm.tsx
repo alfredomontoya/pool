@@ -1,18 +1,19 @@
+import React from "react";
 import { Link } from "@inertiajs/react";
 
-interface SearchFormProps {
+interface Props {
   search: string;
-  onSearchChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  setSearch: (value: string) => void;
+  handleSearch: (e: React.FormEvent) => void;
 }
 
-export default function SearchForm({ search, onSearchChange, onSubmit }: SearchFormProps) {
+export default function ClientesSearchForm({ search, setSearch, handleSearch }: Props) {
   return (
-    <form onSubmit={onSubmit} className="mb-4 flex gap-2">
+    <form onSubmit={handleSearch} className="mb-4 flex gap-2">
       <input
-        type="search"
+        type="text"
         value={search}
-        onChange={(e) => onSearchChange(e.target.value)}
+        onChange={(e) => setSearch(e.target.value)}
         placeholder="Buscar cliente..."
         className="border rounded px-3 py-1"
       />

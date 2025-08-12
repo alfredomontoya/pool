@@ -1,9 +1,10 @@
+import React from "react";
 import { Link, router } from "@inertiajs/react";
-import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
 
 interface Cliente {
   id: number;
   tipo_documento: string;
+  tipo: string;
   numero_documento: string;
   nombre_razon_social: string;
   email: string;
@@ -11,53 +12,33 @@ interface Cliente {
   direccion: string;
 }
 
-interface ClientesTableProps {
-  data: Cliente[];
-  sort: string;
-  direction: string;
-  onSort: (column: string) => void;
+interface Props {
+  clientes: Cliente[];
 }
 
-export default function ClientesTable({ data, sort, direction, onSort }: ClientesTableProps) {
-  const SortIcon = ({ column }: { column: string }) => {
-    if (sort !== column) return null;
-    return direction === "asc" ? (
-      <ChevronUpIcon className="w-4 h-4 inline" />
-    ) : (
-      <ChevronDownIcon className="w-4 h-4 inline" />
-    );
-  };
-
+export default function ClientesTable({ clientes }: Props) {
   return (
     <table className="w-full border">
       <thead>
         <tr className="bg-gray-100">
-          {[
-            { key: "id", label: "ID" },
-            { key: "numero_documento", label: "Número documento" },
-            { key: "nombre_razon_social", label: "Nombre/Razón Social" },
-            { key: "email", label: "Email" },
-            { key: "telefono", label: "Teléfono" },
-            { key: "direccion", label: "Dirección" },
-          ].map(({ key, label }) => (
-            <th
-              key={key}
-              className="p-2 border cursor-pointer"
-              onClick={() => onSort(key)}
-            >
-              {label} <SortIcon column={key} />
-            </th>
-          ))}
+          <th className="p-2 border">ID</th>
+          <th className="p-2 border">Tipo de Documento</th>
+          <th className="p-2 border">Tipo</th>
+          <th className="p-2 border">Número de Documento</th>
+          <th className="p-2 border">Nombre</th>
+          <th className="p-2 border">Email</th>
+          <th className="p-2 border">Teléfono</th>
+          <th className="p-2 border">Dirección</th>
           <th className="p-2 border">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        {data.map((cliente) => (
+        {clientes.map((cliente) => (
           <tr key={cliente.id}>
             <td className="p-2 border">{cliente.id}</td>
-            <td className="p-2 border">
-              {cliente.tipo_documento} {cliente.numero_documento}
-            </td>
+            <td className="p-2 border">{cliente.tipo_documento}</td>
+            <td className="p-2 border">{cliente.tipo}</td>
+            <td className="p-2 border">{cliente.numero_documento}</td>
             <td className="p-2 border">{cliente.nombre_razon_social}</td>
             <td className="p-2 border">{cliente.email}</td>
             <td className="p-2 border">{cliente.telefono}</td>
