@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Head, Link, usePage, router } from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
 import { BreadcrumbItem } from "@/types";
+import { useClientes } from "@/hooks/Clientes/useClientes";
 
 interface Cliente {
   id: number;
@@ -30,12 +31,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index({ clientes, filters }: Props) {
-  const [search, setSearch] = useState(filters.search || "");
+//   const [search, setSearch] = useState(filters.search || "");
+  const { search, setSearch, handleSearch } = useClientes(filters.search || "");
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.get(route("clientes.index"), { search }, { preserveState: true });
-  };
+//   const handleSearch = (e: React.FormEvent) => {
+//     e.preventDefault();
+//     router.get(route("clientes.index"), { search }, { preserveState: true });
+//   };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
