@@ -1,22 +1,12 @@
 import React from "react";
 import { Link, router } from "@inertiajs/react";
-
-interface Cliente {
-  id: number;
-  tipo_documento: string;
-  tipo: string;
-  numero_documento: string;
-  nombre_razon_social: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-}
-
+import { Cliente } from "@/interfaces/cliente.interface";
 interface Props {
   clientes: Cliente[];
+  onSelect: (cliente: Cliente) => void;
 }
 
-export default function ClientesTable({ clientes }: Props) {
+export default function ClientesTable({ clientes, onSelect }: Props) {
   return (
     <table className="w-full border">
       <thead>
@@ -34,7 +24,7 @@ export default function ClientesTable({ clientes }: Props) {
       </thead>
       <tbody>
         {clientes.map((cliente) => (
-          <tr key={cliente.id}>
+          <tr key={cliente.id} onClick={() => onSelect(cliente)} className="cursor-pointer hover:bg-gray-100">
             <td className="p-2 border">{cliente.id}</td>
             <td className="p-2 border">{cliente.tipo_documento}</td>
             <td className="p-2 border">{cliente.tipo}</td>

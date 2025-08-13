@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   search: string;
@@ -11,21 +12,21 @@ export default function ClientesSearchForm({ search, setSearch, handleSearch }: 
   return (
     <form onSubmit={handleSearch} className="mb-4 flex gap-2">
       <input
-        type="text"
+        type="search"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Buscar cliente..."
         className="border rounded px-3 py-1"
       />
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-3 py-1 rounded"
+      <Button
+        type="submit" variant={'default'} size={'sm'}
+        // className="bg-blue-600 text-white px-3 py-1 rounded"
       >
         Buscar
-      </button>
+      </Button>
       <Link
         href={route("clientes.create")}
-        className="bg-green-600 text-white px-3 py-1 rounded"
+        className="bg-secondary text-black px-3 py-1 rounded-sm"
       >
         Nuevo
       </Link>

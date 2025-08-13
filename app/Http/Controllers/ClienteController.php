@@ -37,6 +37,7 @@ class ClienteController extends Controller
         $request['user_id'] = Auth::id();
 
         $validated = $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
             'tipo_documento' => ['required', Rule::in(['CI', 'NIT'])],
             'tipo' => ['required', Rule::in(['NATURAL', 'JURIDICO'])],
             'numero_documento' => ['required', 'string', 'max:255', 'unique:clientes,numero_documento'],

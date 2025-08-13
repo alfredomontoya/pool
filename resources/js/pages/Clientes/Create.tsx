@@ -2,6 +2,12 @@ import React from "react";
 import { useForm, Head } from "@inertiajs/react";
 import { BreadcrumbItem } from "@/types";
 import AppLayout from "@/layouts/app-layout";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import HeadingSmall from "@/components/heading-small";
+import Heading from "@/components/heading";
+import { Button } from "@/components/ui/button";
 
 export default function Create() {
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -25,7 +31,7 @@ export default function Create() {
       },
       onError: () => {
         console.error(errors);
-        alert("❌ Ocurrió un error al registrar el cliente");
+        // alert("❌ Ocurrió un error al registrar el cliente");
       }
     });
 
@@ -41,160 +47,190 @@ export default function Create() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Crear Cliente" />
-      <div className="max-w-2xl mx-auto py-8">
-        <h1 className="text-2xl font-bold mb-6">Registrar Cliente</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="flex-1 md:max-w-2xl">
+        <section className="max-w-xl space-y-12">
+            <div className="px-4 py-6">
+                <Heading title="Registrar cliente" description="Actualiza la información del cliente" />
+                <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Tipo Documento */}
-          <div>
-            <label className="block font-medium">Tipo Documento</label>
-            <select
-              value={data.tipo_documento}
-              onChange={(e) => setData("tipo_documento", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            >
-              <option value="CI">CI</option>
-              <option value="NIT">NIT</option>
-            </select>
-            {errors.tipo_documento && (
-              <p className="text-red-500 text-sm">{errors.tipo_documento}</p>
-            )}
-          </div>
+                    {/* Tipo Documento */}
+                    <div className="grid gap-2">
+                        <Label className="block font-medium">Tipo Documento</Label>
+                        <Select
+                            value={data.tipo_documento}
+                            onValueChange={(valor) => setData("tipo_documento", valor)} // aquí no hay e.target.value
+                            >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Seleccionar tipo de documento" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="CI">CI</SelectItem>
+                                <SelectItem value="NIT">NIT</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {errors.tipo_documento && (
+                        <p className="text-red-500 text-sm">{errors.tipo_documento}</p>
+                        )}
+                    </div>
 
-          {/* Tipo */}
-          <div>
-            <label className="block font-medium">Tipo</label>
-            <select
-              value={data.tipo}
-              onChange={(e) => setData("tipo", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            >
-              <option value="NATURAL">Natural</option>
-              <option value="JURIDICO">Jurídico</option>
-            </select>
-            {errors.tipo && (
-              <p className="text-red-500 text-sm">{errors.tipo}</p>
-            )}
-          </div>
+                    {/* Tipo */}
+                    <div>
+                        <Label className="block font-medium">Tipo</Label>
+                        <Select
+                        value={data.tipo}
+                        onValueChange={(valor) => setData("tipo", valor)}
+                        >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Seleccionar tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="NATURAL">Natural</SelectItem>
+                            <SelectItem value="JURIDICO">Jurídico</SelectItem>
+                        </SelectContent>
+                        </Select>
+                        {errors.tipo && (
+                        <p className="text-red-500 text-sm">{errors.tipo}</p>
+                        )}
+                    </div>
 
-          {/* Numero Documento */}
-          <div>
-            <label className="block font-medium">Numero de documento</label>
-            <input
-              type="text"
-              value={data.numero_documento}
-              onChange={(e) => setData("numero_documento", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
-            {errors.numero_documento && (
-              <p className="text-red-500 text-sm">{errors.numero_documento}</p>
-            )}
-          </div>
+                    {/* Numero Documento */}
+                    <div>
+                        <Label htmlFor="numero_documento">Numero documento</Label>
+                        <Input
+                            id="numero_documento"
+                            className="mt-1 block w-full"
+                            value={data.numero_documento}
+                            onChange={(e) => setData('numero_documento', e.target.value)}
+                            // required
+                            autoComplete="numero_documento"
+                            placeholder="Numero documento"
+                        />
 
-          {/* Nombre */}
-          <div>
-            <label className="block font-medium">Nombre</label>
-            <input
-              type="text"
-              value={data.nombre_razon_social}
-              onChange={(e) => setData("nombre_razon_social", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
-            {errors.nombre_razon_social && (
-              <p className="text-red-500 text-sm">{errors.nombre_razon_social}</p>
-            )}
-          </div>
+                        {errors.numero_documento && (
+                        <p className="text-red-500 text-sm">{errors.numero_documento}</p>
+                        )}
+                    </div>
 
-          {/* Dirección */}
-          <div>
-            <label className="block font-medium">Dirección</label>
-            <input
-              type="text"
-              value={data.direccion}
-              onChange={(e) => setData("direccion", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
-            {errors.direccion && (
-              <p className="text-red-500 text-sm">{errors.direccion}</p>
-            )}
-          </div>
+                    {/* Nombre */}
+                    <div>
+                        <Label htmlFor="nombre_razon_social">Nombre</Label>
+                        <Input
+                        id="nombre_razon_social"
+                        className="mt-1 block w-full"
+                        value={data.nombre_razon_social}
+                        onChange={(e) => setData("nombre_razon_social", e.target.value)}
+                        autoComplete="nombre_razon_social"
+                        placeholder="Nombre o razón social"
+                        />
+                        {errors.nombre_razon_social && (
+                        <p className="text-red-500 text-sm">{errors.nombre_razon_social}</p>
+                        )}
+                    </div>
 
-          {/* Teléfono */}
-          <div>
-            <label className="block font-medium">Teléfono</label>
-            <input
-              type="text"
-              value={data.telefono}
-              onChange={(e) => setData("telefono", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
-            {errors.telefono && (
-              <p className="text-red-500 text-sm">{errors.telefono}</p>
-            )}
-          </div>
+                    {/* Dirección */}
+                    <div>
+                        <Label htmlFor="direccion">Dirección</Label>
+                        <Input
+                        id="direccion"
+                        className="mt-1 block w-full"
+                        value={data.direccion}
+                        onChange={(e) => setData("direccion", e.target.value)}
+                        autoComplete="direccion"
+                        placeholder="Dirección"
+                        />
+                        {errors.direccion && (
+                        <p className="text-red-500 text-sm">{errors.direccion}</p>
+                        )}
+                    </div>
 
-          {/* Email */}
-          <div>
-            <label className="block font-medium">Email</label>
-            <input
-              type="email"
-              value={data.email}
-              onChange={(e) => setData("email", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email}</p>
-            )}
-          </div>
+                    {/* Teléfono */}
+                    <div>
+                        <Label htmlFor="telefono">Teléfono</Label>
+                        <Input
+                        id="telefono"
+                        className="mt-1 block w-full"
+                        value={data.telefono}
+                        onChange={(e) => setData("telefono", e.target.value)}
+                        autoComplete="telefono"
+                        placeholder="Teléfono"
+                        />
+                        {errors.telefono && (
+                        <p className="text-red-500 text-sm">{errors.telefono}</p>
+                        )}
+                    </div>
 
-          {/* Estado */}
-          <div>
-            <label className="block font-medium">Estado</label>
-            <select
-              value={data.estado}
-              onChange={(e) => setData("estado", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            >
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-            {errors.estado && (
-              <p className="text-red-500 text-sm">{errors.estado}</p>
-            )}
-          </div>
+                    {/* Email */}
+                    <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                        id="email"
+                        type="email"
+                        value={data.email}
+                        onChange={(e) => setData("email", e.target.value)}
+                        className="w-full border rounded px-3 py-2"
+                        autoComplete="email"
+                        placeholder="Email"
+                        />
+                        {errors.email && (
+                        <p className="text-red-500 text-sm">{errors.email}</p>
+                        )}
+                    </div>
 
-          {/* Notas */}
-          <div>
-            <label className="block font-medium">Notas</label>
-            <textarea
-              value={data.notas}
-              onChange={(e) => setData("notas", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-              rows={3}
-            />
-            {errors.notas && (
-              <p className="text-red-500 text-sm">{errors.notas}</p>
-            )}
-          </div>
+                    {/* Estado */}
+                    <div>
+                        <Label htmlFor="estado" className="block font-medium">Estado</Label>
+                        <Select
+                            value={data.estado}
+                            onValueChange={(valor) => setData("estado", valor)} // aquí no hay e.target.value
+                            >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Seleccionar estado" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="activo">Activo</SelectItem>
+                                <SelectItem value="inactivo">Inactivo</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {errors.estado && (
+                        <p className="text-red-500 text-sm">{errors.estado}</p>
+                        )}
+                    </div>
 
-          {/* Botones */}
-          <div className="flex space-x-2">
-            <button
-              type="submit"
-              disabled={processing}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-            >
-              Guardar
-            </button>
-            <button
-              type="button"
-              onClick={() => reset()}
-              className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
-            >
-              Limpiar
-            </button>
-          </div>
-        </form>
+                    {/* Notas */}
+                    <div>
+                        <label className="block font-medium">Notas</label>
+                        <textarea
+                        value={data.notas}
+                        onChange={(e) => setData("notas", e.target.value)}
+                        className="w-full border rounded px-3 py-2"
+                        rows={3}
+                        />
+                        {errors.notas && (
+                        <p className="text-red-500 text-sm">{errors.notas}</p>
+                        )}
+                    </div>
+
+                    {/* Botones */}
+                    <div className="flex space-x-2">
+                        <Button
+                            type="submit"
+                            disabled={processing}
+                            variant={'default'}
+                            // className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                        >
+                        Guardar
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={() => reset()}
+                            variant={'outline'}
+                        >
+                            Limpiar
+                        </Button>
+                    </div>
+                </form>
+            </div>
+        </section>
       </div>
     </AppLayout>
   );
