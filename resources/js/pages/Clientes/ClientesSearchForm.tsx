@@ -24,12 +24,7 @@ export default function ClientesSearchForm({ search, setSearch, handleSearch }: 
       >
         Buscar
       </Button>
-      <Link
-        href={route("clientes.create")}
-        className="bg-secondary text-black px-3 py-1 rounded-sm"
-      >
-        Nuevo
-      </Link>
+
     </form>
   );
 }

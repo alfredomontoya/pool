@@ -34,12 +34,15 @@ export default function ClientesTable({ clientes, onSelect }: Props) {
             <td className="p-2 border">{cliente.telefono}</td>
             <td className="p-2 border">{cliente.direccion}</td>
             <td className="p-2 border space-x-2">
-              <Link
-                href={route("clientes.edit", cliente.id)}
-                className="text-blue-600"
-              >
-                Editar
-              </Link>
+              <button
+      onClick={(e) => {
+        e.stopPropagation(); // evita que se dispare el onClick de la fila
+        onSelect(cliente);   // abre modal de actualización
+      }}
+      className="text-blue-600"
+    >
+      Editar
+    </button>
               <button
                 onClick={() =>
                   router.delete(route("clientes.destroy", cliente.id))

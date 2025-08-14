@@ -10,7 +10,7 @@ export default function ClientesDetail({ cliente, onClose }: ClienteDetailProps)
   if (!cliente) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/50  flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded shadow max-w-lg w-full relative">
         <button
           onClick={onClose}
