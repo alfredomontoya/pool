@@ -1,7 +1,6 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import ClienteForm from "./ClienteForm"; // formulario reutilizable
+import ClienteForm from "./ClienteForm";
 import { Cliente } from "@/interfaces/cliente.interface";
 import { useActualizarCliente } from "@/hooks/Clientes/useActualizarCliente";
 
@@ -9,14 +8,18 @@ interface Props {
   open: boolean;
   onClose: () => void;
   cliente: Cliente;
-  onSuccess?: () => void; // callback cuando se actualiza correctamente
+  onSuccess?: () => void; // callback externo opcional
 }
 
 export default function ClienteUpdateModal({ open, onClose, cliente, onSuccess }: Props) {
-  const { data, setData, handleSubmit, processing, errors, reset } = useActualizarCliente(cliente, () => {
-    if (onSuccess) onSuccess(); // disparar callback externo
-    onClose(); // cerrar el modal
-  });
+  const { data, setData, handleSubmit, processing, errors, reset } = useActualizarCliente(
+    cliente,
+    () => {
+      // Callback al actualizar correctamente
+      if (onSuccess) onSuccess();
+      onClose(); // cerrar modal
+    }
+  );
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -32,12 +35,8 @@ export default function ClienteUpdateModal({ open, onClose, cliente, onSuccess }
           errors={errors}
           processing={processing}
           onSubmit={handleSubmit}
+          reset={reset}
         />
-
-        {/* Botón adicional para limpiar
-        <div className="mt-2 flex justify-end">
-          <Button variant="outline" onClick={() => reset()}>Limpiar</Button>
-        </div> */}
       </DialogContent>
     </Dialog>
   );

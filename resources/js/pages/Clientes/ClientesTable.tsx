@@ -1,12 +1,15 @@
 import React from "react";
 import { Link, router } from "@inertiajs/react";
 import { Cliente } from "@/interfaces/cliente.interface";
+import { Button } from "@/components/ui/button";
 interface Props {
   clientes: Cliente[];
   onSelect: (cliente: Cliente) => void;
+  onEdit: (cliente: Cliente) => void;
+  onDelete: (cliente: Cliente) => void; // opcional para manejar eliminación
 }
 
-export default function ClientesTable({ clientes, onSelect }: Props) {
+export default function ClientesTable({ clientes, onSelect, onEdit, onDelete }: Props) {
   return (
     <table className="w-full border">
       <thead>
@@ -34,23 +37,24 @@ export default function ClientesTable({ clientes, onSelect }: Props) {
             <td className="p-2 border">{cliente.telefono}</td>
             <td className="p-2 border">{cliente.direccion}</td>
             <td className="p-2 border space-x-2">
-              <button
-      onClick={(e) => {
-        e.stopPropagation(); // evita que se dispare el onClick de la fila
-        onSelect(cliente);   // abre modal de actualización
-      }}
-      className="text-blue-600"
-    >
-      Editar
-    </button>
-              <button
-                onClick={() =>
-                  router.delete(route("clientes.destroy", cliente.id))
-                }
-                className="text-red-600"
+              <Button
+                onClick={(e) => {
+                    e.stopPropagation(); // evitar que se dispare el evento de selección
+                    onEdit(cliente)
+                }}
+                variant={"default"}
               >
+                Editar
+              </Button>
+            <Button
+                onClick={(e) =>{
+                    e.stopPropagation();
+                    onDelete(cliente)
+                }}
+                variant={"destructive"}
+            >
                 Eliminar
-              </button>
+            </Button>
             </td>
           </tr>
         ))}

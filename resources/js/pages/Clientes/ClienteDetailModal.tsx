@@ -6,7 +6,7 @@ interface ClienteDetailProps {
   onClose: () => void;
 }
 
-export default function ClientesDetail({ cliente, onClose }: ClienteDetailProps) {
+export default function ClienteDetailModal({ cliente, onClose }: ClienteDetailProps) {
   if (!cliente) return null;
 
   return (

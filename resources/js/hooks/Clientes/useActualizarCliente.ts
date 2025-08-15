@@ -1,8 +1,25 @@
-import { Cliente } from "@/interfaces/cliente.interface";
 import { useForm } from "@inertiajs/react";
+import { Cliente } from "@/interfaces/cliente.interface";
+import React from "react";
 
-export function useActualizarCliente(cliente: Cliente, onSuccess?: () => void) {
-  const { data, setData, put, processing, errors, reset } = useForm({
+type ClienteFormData = {
+  tipo_documento: "CI" | "PASAPORTE" | string;
+  tipo: "NATURAL" | "JURIDICO" | string;
+  numero_documento: string;
+  nombre_razon_social: string;
+  direccion: string;
+  telefono: string;
+  email: string;
+  estado: string;
+  notas: string;
+};
+
+export function useActualizarCliente(
+  cliente: Cliente,
+  onSuccess?: () => void,
+  onError?: (errors: Partial<Record<keyof ClienteFormData, string[]>>) => void
+) {
+  const { data, setData, put, processing, errors, reset } = useForm<ClienteFormData>({
     tipo_documento: cliente.tipo_documento || "CI",
     tipo: cliente.tipo || "NATURAL",
     numero_documento: cliente.numero_documento || "",
@@ -10,15 +27,23 @@ export function useActualizarCliente(cliente: Cliente, onSuccess?: () => void) {
     direccion: cliente.direccion || "",
     telefono: cliente.telefono || "",
     email: cliente.email || "",
-    estado: cliente.estado?.toString() || "activo", // convertimos a string si es necesario
+    estado: cliente.estado || "activo",
     notas: cliente.notas || "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     put(route("clientes.update", cliente.id), {
+      preserveScroll: true,
+      preserveState: true,
       onSuccess: () => {
+        console.log("Cliente actualizado correctamente");
         if (onSuccess) onSuccess();
+      },
+      onError: (errs) => {
+        console.log("Errores de validación:", errs);
+        if (onError) onError(errs);
       },
     });
   };

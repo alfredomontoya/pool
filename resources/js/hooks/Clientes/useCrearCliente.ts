@@ -1,11 +1,8 @@
-import { ClienteCrear } from "@/interfaces/cliente.interface";
 import { useForm } from "@inertiajs/react";
-
-
-// Tipo para crear cliente: excluye campos automáticos
+import { toast } from "react-hot-toast";
 
 export function useCrearCliente(onSuccess?: () => void) {
-  const { data, setData, post, processing, errors, reset } = useForm<ClienteCrear>({
+  const { data, setData, post, processing, errors, reset } = useForm({
     tipo_documento: "CI",
     tipo: "NATURAL",
     numero_documento: "",
@@ -21,8 +18,12 @@ export function useCrearCliente(onSuccess?: () => void) {
     e.preventDefault();
     post(route("clientes.store"), {
       onSuccess: () => {
-        reset();
+        toast.success("Cliente creado correctamente!");
         if (onSuccess) onSuccess();
+        reset();
+      },
+      onError: () => {
+        toast.error("Ocurrió un error al crear el cliente");
       },
     });
   };
