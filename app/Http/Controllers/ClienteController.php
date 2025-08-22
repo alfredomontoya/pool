@@ -63,21 +63,30 @@ class ClienteController extends Controller
         ]);
     }
 
+
     public function update(Request $request, Cliente $cliente)
     {
         $data = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'ci' => 'nullable|string|max:20',
-            'telefono' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
-            'direccion' => 'nullable|string|max:255',
+            'tipo_documento' => ['required', Rule::in(['CI', 'NIT'])],
+            'tipo' => ['required', Rule::in(['NATURAL', 'JURIDICO'])],
+            'numero_documento' => ['required', 'string', 'max:255', 'unique:clientes,numero_documento,' . $cliente->id],
+            'nombre_razon_social' => ['required', 'string', 'max:255'],
+            'direccion' => ['nullable', 'string', 'max:255'],
+            'telefono' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255', 'unique:clientes,email,' . $cliente->id],
+            'estado' => ['required', Rule::in(['activo', 'inactivo'])],
+            'notas' => ['nullable', 'string'],
         ]);
 
         $cliente->update($data);
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado');
+        // // Devuelve JSON para Inertia sin redirigir
+        // return response()->json([
+        //     'message' => 'Cliente actualizado correctamente',
+        //     'cliente' => $cliente,
+        // ]);
     }
+
 
     public function destroy(Cliente $cliente)
     {

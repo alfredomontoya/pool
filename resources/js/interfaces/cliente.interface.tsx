@@ -8,8 +8,13 @@ export interface Cliente {
   direccion: string;
   telefono: string;
   email: string;
-  estado: string | number;
+  estado: string;
   notas: string;
   created_at: string;
   updated_at: string;
 }
+
+export type ClienteCrear = Omit<
+  Cliente,
+  "id" | "user_id" | "created_at" | "updated_at"
+>;
