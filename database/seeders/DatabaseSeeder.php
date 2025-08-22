@@ -2,6 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Categoria;
+use App\Models\Producto;
+use App\Models\ProductoImagen;
+use App\Models\ProductoPrecio;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,7 +21,11 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         $this->truncateTables([
             'users',
-            'clientes'
+            'clientes',
+            'categorias',
+            'productos',
+            'producto_imagenes',
+            'producto_precios'
         ]);
 
         User::factory()->create([
@@ -28,6 +36,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // UserSeeder::class,
             ClienteSeeder::class,
+            CategoriaSeeder::class,
+            ProductoSeeder::class,
+            ProductoImagenSeeder::class,
+            ProductoPrecioSeeder::class,
         ]);
     }
 
