@@ -21,7 +21,7 @@ class ClienteController extends Controller
         }
 
         return Inertia::render('Clientes/Index', [
-            'clientes' => $query->paginate(10)->withQueryString(),
+            'clientes' => $query->paginate(5)->withQueryString(),
             'filters' => $request->only('search'),
         ]);
     }

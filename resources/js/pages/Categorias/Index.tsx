@@ -1,24 +1,17 @@
-import React, { useState } from 'react';
-import { usePage, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import CreateModal from '@/components/Categorias/CreateModal';
-import EditModal from '@/components/Categorias/EditModal';
-import ConfirmModal from '@/components/ConfirmModal';
-import Toast from '@/components/Toast';
-import ItemsTable from '@/components/Categorias/ItemsTable';
-import Search from '@/components/Categorias/Search';
-
-interface Categoria {
-  id: number;
-  nombre: string;
-  descripcion?: string;
-}
+import React, { useState } from "react";
+import { usePage, router } from "@inertiajs/react";
+import AppLayout from "@/layouts/app-layout";
+import CreateModal from "@/components/Categorias/CreateModal";
+import EditModal from "@/components/Categorias/EditModal";
+import ConfirmModal from "@/components/ConfirmModal";
+import Toast from "@/components/Toast";
+import ItemsTable from "@/components/Categorias/ItemsTable";
+import Search from "@/components/Categorias/Search";
+import { Categoria, PaginatedCategorias } from "@/interfaces/Categorias.Interface";
+import { Button } from "@/components/ui/button";
 
 interface Props {
-  categorias: {
-    data: Categoria[];
-    meta: any;
-  };
+  categorias: PaginatedCategorias;
   filters: {
     search?: string;
     sort?: string;
@@ -41,7 +34,8 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
 
   const handleDelete = (categoria: Categoria) => {
     router.delete(`/categorias/${categoria.id}`, {
-      onSuccess: () => setToastMessage(`Categoría '${categoria.nombre}' eliminada correctamente.`)
+      onSuccess: () =>
+        setToastMessage(`Categoría '${categoria.nombre}' eliminada correctamente.`),
     });
     setConfirmDelete(null);
   };
@@ -53,24 +47,34 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="p-4">
-        <button
+        {/* Botón para crear nueva categoría */}
+        <Button
           onClick={() => setShowCreate(true)}
-          className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
+          variant={"default"}
+          className="mb-4"
         >
           Nueva Categoría
-        </button>
+        </Button>
 
+        {/* Componente de búsqueda */}
         <Search initialSearch={filters.search} />
 
+        {/* Tabla de categorías */}
         <ItemsTable
-          categorias={categorias.data}
+          categorias={categorias}
           filters={filters}
           onEdit={setEditCategoria}
           onDelete={setConfirmDelete}
         />
 
+        {/* Modales */}
         {showCreate && <CreateModal onClose={() => setShowCreate(false)} />}
-        {editCategoria && <EditModal categoria={editCategoria} onClose={() => setEditCategoria(null)} />}
+        {editCategoria && (
+          <EditModal
+            categoria={editCategoria}
+            onClose={() => setEditCategoria(null)}
+          />
+        )}
         {confirmDelete && (
           <ConfirmModal
             categoria={confirmDelete}
@@ -78,7 +82,11 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
             onClose={() => setConfirmDelete(null)}
           />
         )}
-        {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} />}
+
+        {/* Toast de confirmación */}
+        {toastMessage && (
+          <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+        )}
       </div>
     </AppLayout>
   );

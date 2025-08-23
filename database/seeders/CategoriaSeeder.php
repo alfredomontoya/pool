@@ -12,7 +12,7 @@ class CategoriaSeeder extends Seeder
     {
         $usuarios = User::all();
 
-        Categoria::factory(5)->create()->each(function ($categoria) use ($usuarios) {
+        Categoria::factory(25)->create()->each(function ($categoria) use ($usuarios) {
             $categoria->update([
                 'user_id' => $usuarios->random()->id
             ]);

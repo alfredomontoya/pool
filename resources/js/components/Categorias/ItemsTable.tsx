@@ -1,14 +1,12 @@
-import React from 'react';
-import { router } from '@inertiajs/react';
-
-interface Categoria {
-  id: number;
-  nombre: string;
-  descripcion?: string;
-}
+import React from "react";
+import { router } from "@inertiajs/react";
+import Pagination from "@/components/Pagination";
+import { Categoria, PaginatedCategorias } from "@/interfaces/Categorias.Interface";
+import { ChevronUp, ChevronDown } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface Props {
-  categorias: Categoria[];
+  categorias: PaginatedCategorias;
   filters: {
     sort?: string;
     direction?: string;
@@ -24,28 +22,85 @@ const ItemsTable: React.FC<Props> = ({ categorias, filters, onEdit, onDelete }) 
     router.get('/categorias', { sort: field, direction }, { preserveState: true });
   };
 
+  const renderSortIcon = (field: string) => {
+    if (filters.sort !== field) return null;
+    return filters.direction === 'asc' ? (
+      <ChevronUp className="inline-block w-4 h-4 ml-1" />
+    ) : (
+      <ChevronDown className="inline-block w-4 h-4 ml-1" />
+    );
+  };
+
   return (
-    <table className="table-auto w-full border">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="px-4 py-2 cursor-pointer" onClick={() => handleSort('nombre')}>Nombre</th>
-          <th className="px-4 py-2 cursor-pointer" onClick={() => handleSort('descripcion')}>Descripción</th>
-          <th className="px-4 py-2">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {categorias.map(cat => (
-          <tr key={cat.id} className="border-t">
-            <td className="px-4 py-2">{cat.nombre}</td>
-            <td className="px-4 py-2">{cat.descripcion}</td>
-            <td className="px-4 py-2 space-x-2">
-              <button onClick={() => onEdit(cat)} className="px-2 py-1 bg-green-500 text-white rounded">Editar</button>
-              <button onClick={() => onDelete(cat)} className="px-2 py-1 bg-red-500 text-white rounded">Eliminar</button>
-            </td>
+    <div className="overflow-x-auto bg-default rounded-lg shadow">
+      <table className="min-w-full text-sm text-left border">
+        <thead className="bg-default">
+          <tr>
+            <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort("id")}>
+              ID {renderSortIcon("id")}
+            </th>
+            <th className="px-4 py-2 border">Imagen</th>
+            <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort("nombre")}>
+              Nombre {renderSortIcon("nombre")}
+            </th>
+            <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort("descripcion")}>
+              Descripción {renderSortIcon("descripcion")}
+            </th>
+            <th className="px-4 py-2 border">Acciones</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {categorias?.data?.length ? (
+            categorias.data.map((cat) => (
+              <tr key={cat.id} className="border-t">
+                <td className="px-4 py-2">{cat.id}</td>
+                <td className="px-4 py-2">
+                  {cat.imagen ? (
+                    <img
+                      src={cat.imagen?.startsWith('http') ? cat.imagen : `/storage/${cat.imagen}` || `/images/default-category.png`}
+                      alt={cat.nombre}
+                      className="w-12 h-12 object-cover rounded"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-500 text-xs">
+                      No Image
+                    </div>
+                  )}
+                </td>
+                <td className="px-4 py-2">{cat.nombre}</td>
+                <td className="px-4 py-2">{cat.descripcion}</td>
+                <td className="px-4 py-2 space-x-2">
+                  <Button
+                    onClick={() => onEdit(cat)}
+                    variant={"warning"}
+                    className="px-2 py-1"
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    onClick={() => onDelete(cat)}
+                    variant={"destructive"}
+                    className="px-2 py-1"
+                  >
+                    Eliminar
+                  </Button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={5} className="px-4 py-2 text-center text-gray-500">
+                No hay categorías disponibles
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {/* Paginación */}
+      <Pagination links={categorias?.links ?? []} />
+    </div>
   );
 };
 

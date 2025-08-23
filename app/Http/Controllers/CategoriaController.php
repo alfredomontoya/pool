@@ -12,24 +12,25 @@ class CategoriaController extends Controller
     // Listado con búsqueda y orden
     public function index(Request $request)
     {
-        $query = Categoria::query();
+        // Construimos la consulta
+    $categorias = Categoria::query()
+        // Búsqueda condicional
+        ->when($request->search, fn($query, $search) =>
+            $query->where('nombre', 'like', "%{$search}%")
+                  ->orWhere('descripcion', 'like', "%{$search}%")
+        )
+        // Orden dinámico: campo y dirección
+        ->orderBy(
+            $request->get('sort', 'id'),         // campo por defecto: nombre
+            $request->get('direction', 'desc')       // dirección por defecto: asc
+        )
+        ->paginate(5)           // paginación
+        ->withQueryString();    // mantiene search, sort y direction en los links
 
-        // Buscar por nombre
-        if ($request->has('search')) {
-            $query->where('nombre', 'like', "%{$request->search}%");
-        }
-
-        // Orden
-        $sort = $request->get('sort', 'nombre');
-        $direction = $request->get('direction', 'asc');
-        $query->orderBy($sort, $direction);
-
-        $categorias = $query->paginate(5)->withQueryString();
-
+        // Retornamos con Inertia
         return Inertia::render('Categorias/Index', [
             'categorias' => $categorias,
             'filters' => $request->only('search', 'sort', 'direction'),
-            // flash messages son enviados automáticamente por Inertia
         ]);
     }
 
