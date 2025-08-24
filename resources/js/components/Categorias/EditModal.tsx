@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
+import { Button } from '../ui/button';
 
 interface Categoria {
   id: number;
@@ -31,8 +32,8 @@ const EditModal: React.FC<EditModalProps> = ({ categoria, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded w-96">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-primary p-6 rounded w-96">
         <h2 className="text-xl font-bold mb-4">Editar Categoría</h2>
         <form onSubmit={handleSubmit}>
           <input
@@ -56,8 +57,8 @@ const EditModal: React.FC<EditModalProps> = ({ categoria, onClose }) => {
             className="mb-4"
           />
           <div className="flex justify-end space-x-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">Cancelar</button>
-            <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded">Guardar</button>
+            <Button onClick={onClose} variant={"secondary"}>Cancelar</Button>
+            <Button  variant={"default"}>Guardar</Button>
           </div>
         </form>
       </div>

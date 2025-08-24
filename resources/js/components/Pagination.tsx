@@ -1,5 +1,6 @@
 import React from "react";
 import { router } from "@inertiajs/react";
+import { Button } from "./ui/button";
 
 interface PaginationLink {
   url: string | null;
@@ -20,14 +21,11 @@ const Pagination: React.FC<Props> = ({ links }) => {
   return (
     <div className="flex justify-center mt-4 space-x-1">
       {links.map((link, i) => (
-        <button
+        <Button
           key={i}
           onClick={() => handleClick(link.url)}
-          className={`px-3 py-1 border rounded ${
-            link.active
-              ? "bg-blue-500 text-white"
-              : "bg-white text-gray-700 hover:bg-gray-100"
-          } ${!link.url ? "pointer-events-none opacity-50" : ""}`}
+          variant={link.active ? "default" : "outline"}
+          className={`px-3 py-1 border rounded  ${!link.url ? "pointer-events-none opacity-50" : ""}`}
           dangerouslySetInnerHTML={{ __html: link.label }}
         />
       ))}
