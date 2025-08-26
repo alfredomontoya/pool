@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('categorias', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('imagen'); // ruta en storage
+            $table->string('imagen')->nullable(); // ruta en storage
             $table->text('descripcion')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // 🆕
             $table->timestamps();

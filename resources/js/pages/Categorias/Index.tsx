@@ -40,6 +40,10 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
     setConfirmDelete(null);
   };
 
+  const handleSaved = (msg: string) => {
+    setToastMessage(msg);
+  };
+
   const breadcrumbs: BreadcrumbItem[] = [
     { title: "Categorias", href: "/categorias" },
   ];
@@ -68,13 +72,21 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
         />
 
         {/* Modales */}
-        {showCreate && <CreateModal onClose={() => setShowCreate(false)} />}
+        {showCreate &&
+          <CreateModal
+            onClose={() => setShowCreate(false)}
+            onSaved={(msg: string) => handleSaved(msg)}
+          />
+        }
+
         {editCategoria && (
           <EditModal
             categoria={editCategoria}
             onClose={() => setEditCategoria(null)}
+            onSaved={(msg: string) => handleSaved(msg)}
           />
         )}
+
         {confirmDelete && (
           <ConfirmModal
             categoria={confirmDelete}

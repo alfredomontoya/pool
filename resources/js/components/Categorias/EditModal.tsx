@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import Toast from '../Toast';
 
 interface Categoria {
   id: number;
@@ -11,9 +13,10 @@ interface Categoria {
 interface EditModalProps {
   categoria: Categoria;
   onClose: () => void;
+  onSaved: (msg: string) => void;
 }
 
-const EditModal: React.FC<EditModalProps> = ({ categoria, onClose }) => {
+const EditModal: React.FC<EditModalProps> = ({ categoria, onClose, onSaved }) => {
   const [nombre, setNombre] = useState(categoria.nombre);
   const [descripcion, setDescripcion] = useState(categoria.descripcion || '');
   const [imagen, setImagen] = useState<File | null>(null);
@@ -27,16 +30,19 @@ const EditModal: React.FC<EditModalProps> = ({ categoria, onClose }) => {
     formData.append('_method', 'PUT');
 
     router.post(`/categorias/${categoria.id}`, formData, {
-      onSuccess: () => onClose(),
+      onSuccess: () => {
+        onSaved(`Categoría '${nombre}' actualizada correctamente ✅`);
+        onClose()
+      },
     });
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-primary p-6 rounded w-96">
+      <div className="p-6 rounded w-96 bg-neutral-100 dark:bg-neutral-800">
         <h2 className="text-xl font-bold mb-4">Editar Categoría</h2>
         <form onSubmit={handleSubmit}>
-          <input
+          <Input
             type="text"
             placeholder="Nombre"
             className="border p-2 w-full mb-2"

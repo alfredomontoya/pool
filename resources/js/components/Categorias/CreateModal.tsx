@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 interface CreateModalProps {
   onClose: () => void;
+  onSaved: (msg: string) => void;
 }
 
-const CreateModal: React.FC<CreateModalProps> = ({ onClose }) => {
+
+const CreateModal: React.FC<CreateModalProps> = ({ onClose, onSaved }) => {
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [imagen, setImagen] = useState<File | null>(null);
@@ -18,16 +22,19 @@ const CreateModal: React.FC<CreateModalProps> = ({ onClose }) => {
     if (imagen) formData.append('imagen', imagen);
 
     router.post('/categorias', formData, {
-      onSuccess: () => onClose(),
+      onSuccess: () => {
+        onClose();
+        onSaved(`Categoría '${nombre}' creada correctamente ✅`);
+      },
     });
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded w-96">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="p-6 rounded w-96 bg-neutral-100 dark:bg-neutral-800">
         <h2 className="text-xl font-bold mb-4">Nueva Categoría</h2>
         <form onSubmit={handleSubmit}>
-          <input
+          <Input
             type="text"
             placeholder="Nombre"
             className="border p-2 w-full mb-2"
@@ -48,8 +55,8 @@ const CreateModal: React.FC<CreateModalProps> = ({ onClose }) => {
             className="mb-4"
           />
           <div className="flex justify-end space-x-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">Cancelar</button>
-            <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">Crear</button>
+            <Button type="button" onClick={onClose} variant={"secondary"}>Cancelar</Button>
+            <Button type="submit" variant={"default"}>Crear</Button>
           </div>
         </form>
       </div>

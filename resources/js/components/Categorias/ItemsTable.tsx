@@ -57,15 +57,18 @@ const ItemsTable: React.FC<Props> = ({ categorias, filters, onEdit, onDelete }) 
                 <td className="px-4 py-2">
                   {cat.imagen ? (
                     <img
-                      src={cat.imagen?.startsWith('http') ? cat.imagen : `/storage/${cat.imagen}` || `/images/default-category.png`}
+                      src={cat.imagen?.startsWith('http') ? cat.imagen : `/storage/${cat.imagen}`}
                       alt={cat.nombre}
                       className="w-12 h-12 object-cover rounded"
                       loading="lazy"
                     />
                   ) : (
-                    <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-500 text-xs">
-                      No Image
-                    </div>
+                    <img
+                      src={`/images/default-category.png`}
+                      alt={cat.nombre}
+                      className="w-12 h-12 object-cover rounded"
+                      loading="lazy"
+                    />
                   )}
                 </td>
                 <td className="px-4 py-2">{cat.nombre}</td>
