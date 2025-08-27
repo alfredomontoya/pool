@@ -7,23 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductoImagen extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $table = 'producto_imagenes';
+  protected $fillable = [
+    'producto_id',
+    'imagen',
+    'es_principal',
+    'user_id'
+  ];
 
-    protected $fillable = [
-        'producto_id',
-        'path',
-        'principal'
-    ];
+  // Producto al que pertenece
+  public function producto()
+  {
+    return $this->belongsTo(Producto::class);
+  }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function producto()
-    {
-        return $this->belongsTo(Producto::class);
-    }
+  // Usuario que subió la imagen
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }

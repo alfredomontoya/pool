@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             'clientes',
             'categorias',
             'productos',
-            'producto_imagenes',
+            'producto_imagens',
             'producto_precios'
         ]);
 

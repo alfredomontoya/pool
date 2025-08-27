@@ -3,6 +3,8 @@ export interface Categoria {
   nombre: string;
   descripcion?: string; // opcional
   imagen?: string; // opcional
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PaginatedCategorias {

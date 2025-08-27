@@ -13,9 +13,10 @@ interface Props {
   };
   onEdit: (categoria: Categoria) => void;
   onDelete: (categoria: Categoria) => void;
+  onDetail: (categoria: Categoria) => void; // 👈 nueva prop
 }
 
-const ItemsTable: React.FC<Props> = ({ categorias, filters, onEdit, onDelete }) => {
+const ItemsTable: React.FC<Props> = ({ categorias, filters, onEdit, onDelete, onDetail }) => {
 
   const handleSort = (field: string) => {
     const direction = filters.sort === field && filters.direction === 'asc' ? 'desc' : 'asc';
@@ -52,7 +53,11 @@ const ItemsTable: React.FC<Props> = ({ categorias, filters, onEdit, onDelete }) 
         <tbody>
           {categorias?.data?.length ? (
             categorias.data.map((cat) => (
-              <tr key={cat.id} className="border-t">
+              <tr
+                key={cat.id}
+                className="border-t hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
+                onClick={() => onDetail(cat)} // 👈 al hacer click abre DetailModal
+              >
                 <td className="px-4 py-2">{cat.id}</td>
                 <td className="px-4 py-2">
                   {cat.imagen ? (
@@ -75,14 +80,20 @@ const ItemsTable: React.FC<Props> = ({ categorias, filters, onEdit, onDelete }) 
                 <td className="px-4 py-2">{cat.descripcion}</td>
                 <td className="px-4 py-2 space-x-2">
                   <Button
-                    onClick={() => onEdit(cat)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(cat);
+                    }}
                     variant={"warning"}
                     className="px-2 py-1"
                   >
                     Editar
                   </Button>
                   <Button
-                    onClick={() => onDelete(cat)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(cat);
+                    }}
                     variant={"destructive"}
                     className="px-2 py-1"
                   >

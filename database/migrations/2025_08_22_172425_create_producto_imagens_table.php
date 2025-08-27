@@ -5,20 +5,21 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void
-    {
-        Schema::create('producto_imagenes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
-            $table->string('path'); // ruta en storage
-            $table->boolean('principal')->default(false);
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // 🆕
-            $table->timestamps();
-        });
-    }
+  public function up(): void {
+    Schema::create('producto_imagens', function (Blueprint $table) {
+      $table->id();
+      $table->unsignedBigInteger('producto_id');
+      $table->string('imagen');
+      $table->boolean('es_principal')->default(false);
+      $table->unsignedBigInteger('user_id'); // quien subió la imagen
+      $table->timestamps();
 
-    public function down(): void
-    {
-        Schema::dropIfExists('producto_imagenes');
-    }
+      $table->foreign('producto_id')->references('id')->on('productos')->onDelete('cascade');
+      $table->foreign('user_id')->references('id')->on('users');
+    });
+  }
+
+  public function down(): void {
+    Schema::dropIfExists('producto_imagens');
+  }
 };

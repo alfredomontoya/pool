@@ -7,48 +7,60 @@ use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = [
-        'nombre',
-        'descripcion',
-        'categoria_id'
-    ];
+  protected $fillable = [
+    'nombre',
+    'descripcion',
+    'categoria_id',
+    'codigo',
+    'stock_actual',
+    'stock_minimo',
+    'unidad_medida',
+    'activo',
+    'user_id',
+    'updated_by'
+  ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+  // Relación con imágenes
+  public function imagenes()
+  {
+    return $this->hasMany(ProductoImagen::class);
+  }
 
+  // Imagen principal
+  public function imagenPrincipal()
+  {
+    return $this->hasOne(ProductoImagen::class)->where('es_principal', true);
+  }
 
-    public function categoria()
-    {
-        return $this->belongsTo(Categoria::class);
-    }
+  // Relación con precios
+  public function precios()
+  {
+    return $this->hasMany(ProductoPrecio::class);
+  }
 
-    public function imagenes()
-    {
-        return $this->hasMany(ProductoImagen::class);
-    }
+  // Precio activo
+  public function precioActivo()
+  {
+    return $this->hasOne(ProductoPrecio::class)->where('activo', true);
+  }
 
-    public function precios()
-    {
-        return $this->hasMany(ProductoPrecio::class);
-    }
+  // Usuario creador
+  public function user()
+  {
+    return $this->belongsTo(User::class, 'user_id');
+  }
 
-    public function precioVigente()
-    {
-        return $this->precios()
-            ->where('activo', true)
-            ->where(function ($query) {
-                $query->whereNull('fecha_inicio')
-                      ->orWhere('fecha_inicio', '<=', now());
-            })
-            ->where(function ($query) {
-                $query->whereNull('fecha_fin')
-                      ->orWhere('fecha_fin', '>=', now());
-            })
-            ->latest()
-            ->first();
-    }
+  // Usuario que actualizó
+  public function updatedBy()
+  {
+    return $this->belongsTo(User::class, 'updated_by');
+  }
+
+  // Relación con categoría
+  public function categoria()
+  {
+    return $this->belongsTo(Categoria::class);
+  }
 }

@@ -10,12 +10,6 @@ class CategoriaSeeder extends Seeder
 {
     public function run(): void
     {
-        $usuarios = User::all();
-
-        Categoria::factory(25)->create()->each(function ($categoria) use ($usuarios) {
-            $categoria->update([
-                'user_id' => $usuarios->random()->id
-            ]);
-        });
+        Categoria::factory(5)->create();
     }
 }

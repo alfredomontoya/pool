@@ -11,14 +11,6 @@ class ProductoSeeder extends Seeder
 {
     public function run(): void
     {
-        $usuarios = User::all();
-        $categorias = Categoria::all();
-
-        $categorias->each(function ($categoria) use ($usuarios) {
-            Producto::factory(10)->create([
-                'categoria_id' => $categoria->id,
-                'user_id' => $usuarios->random()->id,
-            ]);
-        });
+        Producto::factory()->count(50)->create();
     }
 }

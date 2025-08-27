@@ -2,23 +2,31 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
-use App\Models\Producto;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\ProductoPrecio;
+use App\Models\Producto;
+use App\Models\User;
 
 class ProductoPrecioFactory extends Factory
 {
-    public function definition(): array
-    {
-        return [
-            'producto_id' => Producto::inRandomOrder()->first()->id ?? Producto::factory(), // 🆕
-            'precio' => $this->faker->randomFloat(2, 10, 500),
-            'descuento' => $this->faker->optional(0.3)->randomFloat(2, 1, 50),
-            'codigo_descuento' => $this->faker->optional(0.3)->bothify('DESC###'),
-            'activo' => $this->faker->boolean(80),
-            'fecha_inicio' => $this->faker->optional()->dateTimeBetween('-1 month', 'now'),
-            'fecha_fin' => $this->faker->optional()->dateTimeBetween('now', '+1 month'),
-            'user_id' => User::inRandomOrder()->first()->id ?? User::factory(), // 🆕
-        ];
-    }
+  protected $model = ProductoPrecio::class;
+
+  public function definition()
+  {
+    $producto = Producto::inRandomOrder()->first() ?? Producto::factory()->create();
+    $user = User::inRandomOrder()->first() ?? User::factory()->create();
+
+    $precioCompra = $this->faker->randomFloat(2, 10, 300);
+    $precioVenta = $precioCompra + $this->faker->randomFloat(2, 5, 200);
+
+    return [
+      'producto_id' => $producto->id,
+      'precio_venta' => $precioVenta,
+      'precio_compra' => $precioCompra,
+      'activo' => true,
+      'fecha_inicio' => now(),
+      'fecha_fin' => null,
+      'user_id' => $user->id,
+    ];
+  }
 }

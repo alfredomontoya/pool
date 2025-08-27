@@ -9,6 +9,7 @@ import ItemsTable from "@/components/Categorias/ItemsTable";
 import Search from "@/components/Categorias/Search";
 import { Categoria, PaginatedCategorias } from "@/interfaces/Categorias.Interface";
 import { Button } from "@/components/ui/button";
+import DetailModal from "@/components/Categorias/DetailModal";
 
 interface Props {
   categorias: PaginatedCategorias;
@@ -31,6 +32,7 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
   const [showCreate, setShowCreate] = useState(false);
   const [editCategoria, setEditCategoria] = useState<Categoria | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Categoria | null>(null);
+  const [detailCategoria, setDetailCategoria] = useState<Categoria | null>(null);
 
   const handleDelete = (categoria: Categoria) => {
     router.delete(`/categorias/${categoria.id}`, {
@@ -43,6 +45,7 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
   const handleSaved = (msg: string) => {
     setToastMessage(msg);
   };
+
 
   const breadcrumbs: BreadcrumbItem[] = [
     { title: "Categorias", href: "/categorias" },
@@ -69,6 +72,7 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
           filters={filters}
           onEdit={setEditCategoria}
           onDelete={setConfirmDelete}
+          onDetail={setDetailCategoria}
         />
 
         {/* Modales */}
@@ -85,6 +89,13 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
             onClose={() => setEditCategoria(null)}
             onSaved={(msg: string) => handleSaved(msg)}
           />
+        )}
+
+        {detailCategoria && (
+        <DetailModal
+            categoria={detailCategoria}
+            onClose={() => setDetailCategoria(null)}
+        />
         )}
 
         {confirmDelete && (

@@ -11,13 +11,10 @@ class ProductoImagenSeeder extends Seeder
 {
     public function run(): void
     {
-        $usuarios = User::all();
-        $productos = Producto::all();
-
-        $productos->each(function ($producto) use ($usuarios) {
-            ProductoImagen::factory(rand(1,3))->create([
+        // Se generan entre 1 y 3 imágenes por producto
+        Producto::all()->each(function ($producto) {
+            ProductoImagen::factory(rand(1, 3))->create([
                 'producto_id' => $producto->id,
-                'user_id' => $usuarios->random()->id,
             ]);
         });
     }
