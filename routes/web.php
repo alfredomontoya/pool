@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Middleware\SetUserId;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', SetUserId::class])->group(function () {
     Route::resource('clientes', ClienteController::class);
     Route::resource('categorias', CategoriaController::class);
+    Route::resource('productos', ProductoController::class);
 });
 
 require __DIR__.'/settings.php';
