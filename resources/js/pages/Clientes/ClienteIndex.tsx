@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { usePage, router } from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
-import CreateModal from "@/components/Categorias/CreateModal";
-import EditModal from "@/components/Categorias/EditModal";
+import ClienteItemsTable from "@/components/Clientes/ClienteItemsTable";
+import ClienteCreateModal from "@/components/Clientes/ClienteCreateModal";
+import ClienteEditModal from "@/components/Clientes/ClienteEditModal";
+import ClienteDetailModal from "@/components/Clientes/ClienteDetailModal";
 import ConfirmModal from "@/components/ConfirmModal";
 import Toast from "@/components/Toast";
-import ItemsTable from "@/components/Categorias/ItemsTable";
-import Search from "@/components/Categorias/Search";
-import { Categoria, PaginatedCategorias } from "@/interfaces/Categorias.Interface";
+import Search from "@/components/Clientes/ClienteSearch";
+import { Cliente, PaginatedClientes } from "@/interfaces/Clientes.Interface";
 import { Button } from "@/components/ui/button";
-import DetailModal from "@/components/Categorias/DetailModal";
 
 interface Props {
-  categorias: PaginatedCategorias;
+  clientes: PaginatedClientes;
   filters: {
     search?: string;
     sort?: string;
@@ -25,19 +25,21 @@ interface BreadcrumbItem {
   href: string;
 }
 
-const Index: React.FC<Props> = ({ categorias, filters }) => {
+const ClienteIndex: React.FC<Props> = ({ clientes, filters }) => {
   const { flash } = usePage().props as any;
   const [toastMessage, setToastMessage] = useState(flash?.success || null);
 
   const [showCreate, setShowCreate] = useState(false);
-  const [editCategoria, setEditCategoria] = useState<Categoria | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState<Categoria | null>(null);
-  const [detailCategoria, setDetailCategoria] = useState<Categoria | null>(null);
+  const [editCliente, setEditCliente] = useState<Cliente | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Cliente | null>(null);
+  const [detailCliente, setDetailCliente] = useState<Cliente | null>(null);
 
-  const handleDelete = (categoria: Categoria) => {
-    router.delete(`/categorias/${categoria.id}`, {
+  const handleDelete = (cliente: Cliente) => {
+    router.delete(`/clientes/${cliente.id}`, {
       onSuccess: () =>
-        setToastMessage(`Categoría '${categoria.nombre}' eliminada correctamente.`),
+        setToastMessage(
+          `Cliente '${cliente.nombre_razon_social}' eliminado correctamente.`
+        ),
     });
     setConfirmDelete(null);
   };
@@ -46,61 +48,60 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
     setToastMessage(msg);
   };
 
-
   const breadcrumbs: BreadcrumbItem[] = [
-    { title: "Categorias", href: "/categorias" },
+    { title: "Clientes", href: "/clientes" },
   ];
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="p-4">
-        {/* Botón para crear nueva categoría */}
+        {/* Botón para crear nuevo cliente */}
         <Button
           onClick={() => setShowCreate(true)}
           variant={"default"}
           className="mb-4"
         >
-          Nueva Categoría
+          Nuevo Cliente
         </Button>
 
         {/* Componente de búsqueda */}
         <Search initialSearch={filters.search} />
 
-        {/* Tabla de categorías */}
-        <ItemsTable
-          categorias={categorias}
+        {/* Tabla de clientes */}
+        <ClienteItemsTable
+          clientes={clientes}
           filters={filters}
-          onEdit={setEditCategoria}
+          onEdit={setEditCliente}
           onDelete={setConfirmDelete}
-          onDetail={setDetailCategoria}
+          onDetail={setDetailCliente}
         />
 
         {/* Modales */}
-        {showCreate &&
-          <CreateModal
+        {showCreate && (
+          <ClienteCreateModal
             onClose={() => setShowCreate(false)}
-            onSaved={(msg: string) => handleSaved(msg)}
-          />
-        }
-
-        {editCategoria && (
-          <EditModal
-            categoria={editCategoria}
-            onClose={() => setEditCategoria(null)}
             onSaved={(msg: string) => handleSaved(msg)}
           />
         )}
 
-        {detailCategoria && (
-        <DetailModal
-            categoria={detailCategoria}
-            onClose={() => setDetailCategoria(null)}
-        />
+        {editCliente && (
+          <ClienteEditModal
+            cliente={editCliente}
+            onClose={() => setEditCliente(null)}
+            onSaved={(msg: string) => handleSaved(msg)}
+          />
+        )}
+
+        {detailCliente && (
+          <ClienteDetailModal
+            cliente={detailCliente}
+            onClose={() => setDetailCliente(null)}
+          />
         )}
 
         {confirmDelete && (
           <ConfirmModal
-            categoria={confirmDelete}
+            text={confirmDelete.nombre_razon_social}
             onConfirm={() => handleDelete(confirmDelete)}
             onClose={() => setConfirmDelete(null)}
           />
@@ -115,4 +116,4 @@ const Index: React.FC<Props> = ({ categorias, filters }) => {
   );
 };
 
-export default Index;
+export default ClienteIndex;

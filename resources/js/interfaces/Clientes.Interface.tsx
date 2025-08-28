@@ -18,3 +18,13 @@ export type ClienteCrear = Omit<
   Cliente,
   "id" | "user_id" | "created_at" | "updated_at"
 >;
+
+export interface PaginatedClientes {
+  data: Cliente[];
+  links: {
+    url: string | null;
+    label: string;
+    active: boolean;
+  }[];
+  meta?: any;
+}

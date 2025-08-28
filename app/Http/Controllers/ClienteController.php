@@ -12,17 +12,27 @@ class ClienteController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Cliente::query();
-
-        if ($request->filled('search')) {
-            $query->where('nombre_razon_social', 'like', "%{$request->search}%")
-                ->orWhere('numero_documento', 'like', "%{$request->search}%")
-                ->orWhere('email', 'like', "%{$request->search}%");
-        }
-
-        return Inertia::render('Clientes/Index', [
-            'clientes' => $query->paginate(5)->withQueryString(),
-            'filters' => $request->only('search'),
+        $clientes = Cliente::query()
+            // 🔍 Búsqueda condicional
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nombre_razon_social', 'like', "%{$search}%")
+                    ->orWhere('numero_documento', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('telefono', 'like', "%{$search}%");
+                });
+            })
+            // ↕️ Orden dinámico
+            ->orderBy(
+                $request->get('sort', 'id'),      // campo por defecto: id
+                $request->get('direction', 'desc') // dirección por defecto: desc
+            )
+            ->paginate(5) // puedes cambiar el tamaño de página
+            ->withQueryString(); // mantiene search, sort y direction en los links
+        // Retorno con Inertia
+        return Inertia::render('Clientes/ClienteIndex', [
+            'clientes' => $clientes,
+            'filters'  => $request->only('search', 'sort', 'direction'),
         ]);
     }
 

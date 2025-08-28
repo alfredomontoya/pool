@@ -7,7 +7,7 @@ import ClientesSearchForm from "./ClientesSearchForm";
 import ClientesTable from ".//ClientesTable";
 import ClientesPagination from "./ClientesPagination";
 import ClienteDetailModal from "./ClienteDetailModal";
-import { Cliente } from "@/interfaces/cliente.interface";
+import { Cliente } from "@/interfaces/Clientes.Interface";
 import CreateClienteModal from "./ClienteCreateModal";
 import { Button } from "@/components/ui/button";
 import ConfirmacionRegistro from "@/components/ConfirmacionRegistro";

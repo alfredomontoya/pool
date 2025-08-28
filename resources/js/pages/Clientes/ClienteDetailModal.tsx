@@ -1,4 +1,4 @@
-import { Cliente } from "@/interfaces/cliente.interface";
+import { Cliente } from "@/interfaces/Clientes.interface";
 import React from "react";
 
 interface ClienteDetailProps {

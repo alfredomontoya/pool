@@ -8,7 +8,7 @@ interface DetailModalProps {
   onClose: () => void
 }
 
-const DetailModal: React.FC<DetailModalProps> = ({ categoria, onClose }) => {
+const CategoriaDetailModal: React.FC<DetailModalProps> = ({ categoria, onClose }) => {
   const [showZoom, setShowZoom] = useState(false)
 
   if (!categoria) return null
@@ -83,4 +83,4 @@ const DetailModal: React.FC<DetailModalProps> = ({ categoria, onClose }) => {
   )
 }
 
-export default DetailModal
+export default CategoriaDetailModal

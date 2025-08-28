@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, router } from "@inertiajs/react";
-import { Cliente } from "@/interfaces/cliente.interface";
+import { Cliente } from "@/interfaces/Clientes.interface";
 import { Button } from "@/components/ui/button";
 interface Props {
   clientes: Cliente[];
@@ -25,7 +25,7 @@ export default function ClientesTable({ clientes, onSelect, onEdit, onDelete }: 
           <th className="p-2 border">Acciones</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody>|
         {clientes.map((cliente) => (
           <tr key={cliente.id} onClick={() => onSelect(cliente)} className="cursor-pointer hover:bg-gray-100">
             <td className="p-2 border">{cliente.id}</td>

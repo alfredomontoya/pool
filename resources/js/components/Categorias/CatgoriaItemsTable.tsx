@@ -16,7 +16,7 @@ interface Props {
   onDetail: (categoria: Categoria) => void; // 👈 nueva prop
 }
 
-const ItemsTable: React.FC<Props> = ({ categorias, filters, onEdit, onDelete, onDetail }) => {
+const CategoriaItemsTable: React.FC<Props> = ({ categorias, filters, onEdit, onDelete, onDetail }) => {
 
   const handleSort = (field: string) => {
     const direction = filters.sort === field && filters.direction === 'asc' ? 'desc' : 'asc';
@@ -118,4 +118,4 @@ const ItemsTable: React.FC<Props> = ({ categorias, filters, onEdit, onDelete, on
   );
 };
 
-export default ItemsTable;
+export default CategoriaItemsTable;

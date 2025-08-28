@@ -16,7 +16,7 @@ interface EditModalProps {
   onSaved: (msg: string) => void
 }
 
-const EditModal: React.FC<EditModalProps> = ({ categoria, onClose, onSaved }) => {
+const CategoriaEditModal: React.FC<EditModalProps> = ({ categoria, onClose, onSaved }) => {
   const [nombre, setNombre] = useState(categoria.nombre)
   const [descripcion, setDescripcion] = useState(categoria.descripcion || "")
   const [imagen, setImagen] = useState<File | null>(null)
@@ -106,4 +106,4 @@ const EditModal: React.FC<EditModalProps> = ({ categoria, onClose, onSaved }) =>
   )
 }
 
-export default EditModal
+export default CategoriaEditModal

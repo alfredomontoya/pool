@@ -8,7 +8,7 @@ interface CreateModalProps {
   onSaved: (msg: string) => void
 }
 
-const CreateModal: React.FC<CreateModalProps> = ({ onClose, onSaved }) => {
+const CategoriaCreateModal: React.FC<CreateModalProps> = ({ onClose, onSaved }) => {
   const [nombre, setNombre] = useState("")
   const [descripcion, setDescripcion] = useState("")
   const [imagen, setImagen] = useState<File | null>(null)
@@ -91,4 +91,4 @@ const CreateModal: React.FC<CreateModalProps> = ({ onClose, onSaved }) => {
   )
 }
 
-export default CreateModal
+export default CategoriaCreateModal
