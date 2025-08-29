@@ -23,7 +23,7 @@ class ProductoImagenFactory extends Factory
       'imagen' => function () {
         //   try {
               $filename = 'productos/' . uniqid() . '.jpg';
-              $url = 'https://dummyimage.com/640x480/' . ltrim($this->faker->hexColor(), '#'). '/000000.png&text=' . $this->faker->text(5);
+              $url = 'https://dummyimage.com/640x480/' . ltrim($this->faker->hexColor(), '#'). '/' . ltrim($this->faker->hexColor(), '#'). '.png&text=' . $this->faker->text(5);
               $response = Http::timeout(20)->get($url); // Timeout 20s
               Storage::disk('public')->put($filename, $response->body());
               return $filename;
