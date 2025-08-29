@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\ProductoImagen;
 use App\Models\Producto;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class ProductoImagenFactory extends Factory
 {
@@ -18,7 +20,18 @@ class ProductoImagenFactory extends Factory
 
     return [
       'producto_id' => $producto->id,
-      'imagen' => 'https://picsum.photos/400/400?random=' . $this->faker->unique()->numberBetween(1, 1000),
+      'imagen' => function () {
+        //   try {
+              $filename = 'productos/' . uniqid() . '.jpg';
+              $url = 'https://dummyimage.com/640x480/' . ltrim($this->faker->hexColor(), '#'). '/000000.png&text=' . $this->faker->text(5);
+              $response = Http::timeout(20)->get($url); // Timeout 20s
+              Storage::disk('public')->put($filename, $response->body());
+              return $filename;
+        //   } catch (\Exception $e) {
+        //       // En caso de fallo, fallback a imagen local
+        //       return 'images/default-product.png';
+        //   }
+      },
       'es_principal' => $this->faker->boolean(30), // 30% chance
       'user_id' => $user->id,
     ];

@@ -12,9 +12,9 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
   const [showZoom, setShowZoom] = useState(false);
   if (!producto) return null;
 
-  const imageSrc = producto.imagen?.startsWith("http")
-    ? producto.imagen
-    : `/storage/${producto.imagen ?? "images/default-product.png"}`;
+  const imageSrc = producto.imagen_principal?.imagen?.startsWith("http")
+    ? producto.imagen_principal?.imagen
+    : `/storage/${producto.imagen_principal?.imagen ?? "images/default-product.png"}`;
 
   return (
     <>
@@ -38,7 +38,7 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
             <div><span className="font-semibold">ID:</span> {producto.id}</div>
             <div><span className="font-semibold">Nombre:</span> {producto.nombre}</div>
             {producto.descripcion && <div><span className="font-semibold">Descripción:</span> {producto.descripcion}</div>}
-            <div><span className="font-semibold">Precio:</span> {producto.precio}</div>
+            <div><span className="font-semibold">Precio:</span> {producto.precio_activo?.precio_venta}</div>
             <div><span className="font-semibold">Creado:</span> {producto.created_at ? new Date(producto.created_at).toLocaleString() : "—"}</div>
             <div><span className="font-semibold">Actualizado:</span> {producto.updated_at ? new Date(producto.updated_at).toLocaleString() : "—"}</div>
           </div>

@@ -1,57 +1,125 @@
 import React from "react";
 import { router } from "@inertiajs/react";
-import { Producto } from "@/interfaces/Productos.Interface";
+import Pagination from "@/components/Pagination";
+import { Producto, PaginatedProductos } from "@/interfaces/Productos.Interface";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 
 interface Props {
-  productos: Producto[];
+  productos: PaginatedProductos;
+  filters: {
+    sort?: string;
+    direction?: string;
+  };
   onEdit: (producto: Producto) => void;
   onDelete: (producto: Producto) => void;
   onDetail: (producto: Producto) => void;
 }
 
-const ProductoItemsTable: React.FC<Props> = ({ productos, onEdit, onDelete, onDetail }) => {
-  if (productos.length === 0) {
-    return <p className="text-center text-gray-500">No hay productos disponibles.</p>;
-  }
+const ProductoItemsTable: React.FC<Props> = ({ productos, filters, onEdit, onDelete, onDetail }) => {
+  const handleSort = (field: string) => {
+    const direction = filters.sort === field && filters.direction === "asc" ? "desc" : "asc";
+    router.get("/productos", { sort: field, direction }, { preserveState: true });
+  };
+
+  const renderSortIcon = (field: string) => {
+    if (filters.sort !== field) return null;
+    return filters.direction === "asc" ? (
+      <ChevronUp className="inline-block w-4 h-4 ml-1" />
+    ) : (
+      <ChevronDown className="inline-block w-4 h-4 ml-1" />
+    );
+  };
 
   return (
-    <table className="w-full border-collapse border border-gray-200 dark:border-gray-700">
-      <thead className="bg-gray-100 dark:bg-gray-800">
-        <tr>
-          <th className="border p-2">ID</th>
-          <th className="border p-2">Nombre</th>
-          <th className="border p-2">Precio</th>
-          <th className="border p-2">Estado</th>
-          <th className="border p-2">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {productos.map((producto) => (
-          <tr key={producto.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-            <td className="border p-2 text-center">{producto.id}</td>
-            <td className="border p-2">{producto.nombre}</td>
-            <td className="border p-2 text-right">{producto.precio}</td>
-            <td className="border p-2 text-center">{producto.activo ? "Activo" : "Inactivo"}</td>
-            <td className="border p-2 flex space-x-2 justify-center">
-              <Button size="sm" variant="default" onClick={() => onDetail(producto)}>
-                Ver
-              </Button>
-              <Button size="sm" variant="secondary" onClick={() => onEdit(producto)}>
-                Editar
-              </Button>
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={() => onDelete(producto)}
-              >
-                Eliminar
-              </Button>
-            </td>
+    <div className="overflow-x-auto bg-default rounded-lg shadow">
+      <table className="min-w-full text-sm text-left border">
+        <thead className="bg-default">
+          <tr>
+            <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort("id")}>
+              ID {renderSortIcon("id")}
+            </th>
+            <th className="px-4 py-2 border">Imagen</th>
+            <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort("nombre")}>
+              Nombre {renderSortIcon("nombre")}
+            </th>
+            <th className="px-4 py-2 border">Descripción</th>
+            <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort("precio")}>
+              Precio {renderSortIcon("precio")}
+            </th>
+            <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort("stock")}>
+              Stock {renderSortIcon("stock")}
+            </th>
+            <th className="px-4 py-2 border">Acciones</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {productos?.data?.length ? (
+            productos.data.map((prod) => (
+              <tr
+                key={prod.id}
+                className="border-t hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
+                onClick={() => onDetail(prod)}
+              >
+                <td className="px-4 py-2">{prod.id}</td>
+                <td className="px-4 py-2">
+                  {prod.imagen_principal ? (
+                    <img
+                      src={prod.imagen_principal.imagen?.startsWith("http") ? prod.imagen_principal.imagen : `/storage/${prod.imagen_principal.imagen}`}
+                      alt={prod.nombre}
+                      className="w-12 h-12 object-cover rounded"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <img
+                      src={`/images/default-product.png`}
+                      alt={prod.nombre}
+                      className="w-12 h-12 object-cover rounded"
+                      loading="lazy"
+                    />
+                  )}
+                </td>
+                <td className="px-4 py-2">{prod.nombre}</td>
+                <td className="px-4 py-2">{prod.descripcion}</td>
+                <td className="px-4 py-2">Bs. {prod.precio_activo?.precio_venta}</td>
+                <td className="px-4 py-2">{prod.stock_actual}</td>
+                <td className="px-4 py-2 space-x-2">
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit(prod);
+                    }}
+                    variant={"warning"}
+                    className="px-2 py-1"
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(prod);
+                    }}
+                    variant={"destructive"}
+                    className="px-2 py-1"
+                  >
+                    Eliminar
+                  </Button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={7} className="px-4 py-2 text-center text-gray-500">
+                No hay productos disponibles
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {/* Paginación */}
+      <Pagination links={productos?.links ?? []} />
+    </div>
   );
 };
 

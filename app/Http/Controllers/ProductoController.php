@@ -13,7 +13,7 @@ class ProductoController extends Controller
     // Listado con búsqueda y orden
     public function index(Request $request)
     {
-        $productos = Producto::with('categoria')
+         $productos = Producto::with(['categoria', 'imagenPrincipal', 'precioActivo'])
             ->when($request->search, fn($query, $search) =>
                 $query->where('nombre', 'like', "%{$search}%")
                     ->orWhere('descripcion', 'like', "%{$search}%")
