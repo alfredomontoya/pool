@@ -1,5 +1,5 @@
 import { useForm } from "@inertiajs/react";
-import { Cliente } from "@/interfaces/Clientes.interface";
+import { Cliente } from "@/interfaces/Clientes.Interface";
 import React from "react";
 
 type ClienteFormData = {

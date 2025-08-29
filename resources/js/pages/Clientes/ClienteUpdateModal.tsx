@@ -1,7 +1,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import ClienteForm from "./ClienteForm";
-import { Cliente } from "@/interfaces/Clientes.interface";
+import { Cliente } from "@/interfaces/Clientes.Interface";
 import { useActualizarCliente } from "@/hooks/Clientes/useActualizarCliente";
 
 interface Props {

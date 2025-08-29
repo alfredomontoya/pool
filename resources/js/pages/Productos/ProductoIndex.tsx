@@ -9,10 +9,12 @@ import ConfirmModal from "@/components/ConfirmModal";
 import Toast from "@/components/Toast";
 import ProductoSearch from "@/components/Productos/ProductoSearch";
 import { Producto, PaginatedProductos } from "@/interfaces/Productos.Interface";
+import { Categoria } from "@/interfaces/Categorias.Interface";
 import { Button } from "@/components/ui/button";
 
 interface Props {
   productos: PaginatedProductos;
+  categorias: Categoria[];
   filters: {
     search?: string;
     sort?: string;
@@ -25,7 +27,7 @@ interface BreadcrumbItem {
   href: string;
 }
 
-const ProductoIndex: React.FC<Props> = ({ productos, filters }) => {
+const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
   const { flash } = usePage().props as any;
   const [toastMessage, setToastMessage] = useState(flash?.success || null);
 
@@ -51,7 +53,11 @@ const ProductoIndex: React.FC<Props> = ({ productos, filters }) => {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="p-4">
-        <Button onClick={() => setShowCreate(true)} variant={"default"} className="mb-4">
+        <Button
+          onClick={() => setShowCreate(true)}
+          variant="default"
+          className="mb-4"
+        >
           Nuevo Producto
         </Button>
 
@@ -67,8 +73,10 @@ const ProductoIndex: React.FC<Props> = ({ productos, filters }) => {
 
         {showCreate && (
           <ProductoCreateModal
+            show={showCreate}
             onClose={() => setShowCreate(false)}
             onSaved={(msg) => handleSaved(msg)}
+            categorias={categorias} // <-- pasamos categorías
           />
         )}
 
@@ -95,7 +103,9 @@ const ProductoIndex: React.FC<Props> = ({ productos, filters }) => {
           />
         )}
 
-        {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} />}
+        {toastMessage && (
+          <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+        )}
       </div>
     </AppLayout>
   );

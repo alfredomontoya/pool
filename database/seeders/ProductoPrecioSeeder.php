@@ -15,9 +15,15 @@ class ProductoPrecioSeeder extends Seeder
         $productos = Producto::all();
 
         $productos->each(function ($producto) use ($usuarios) {
+            ProductoPrecio::factory(1)->create([
+                'producto_id' => $producto->id,
+                'user_id' => $usuarios->random()->id,
+                'activo' => true
+            ]);
             ProductoPrecio::factory(rand(1,2))->create([
                 'producto_id' => $producto->id,
                 'user_id' => $usuarios->random()->id,
+                'activo' => false,
             ]);
         });
     }

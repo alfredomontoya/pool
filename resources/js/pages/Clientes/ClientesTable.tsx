@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, router } from "@inertiajs/react";
-import { Cliente } from "@/interfaces/Clientes.interface";
+import { Cliente } from "@/interfaces/Clientes.Interface";
 import { Button } from "@/components/ui/button";
 interface Props {
   clientes: Cliente[];

@@ -1,3 +1,5 @@
+import { Categoria } from "./Categorias.Interface";
+
 export interface Producto {
   id: number;
   nombre: string;
@@ -70,14 +72,6 @@ export interface ProductoPrecio {
   fecha_fin: string | null;
   user_id: number;
   user?: User;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Categoria {
-  id: number;
-  nombre: string;
-  descripcion?: string;
   created_at: string;
   updated_at: string;
 }

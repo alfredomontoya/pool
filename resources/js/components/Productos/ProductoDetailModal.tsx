@@ -1,55 +1,125 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Producto } from "@/interfaces/Productos.Interface";
 import { Button } from "../ui/button";
 import ZoomImageModal from "../helpers/ZoomImageModal";
+import { X } from "lucide-react";
 
 interface DetailModalProps {
   producto: Producto | null;
   onClose: () => void;
 }
 
+const formatoFecha = (fecha: string | null | undefined) => {
+  if (!fecha) return "—";
+  return new Date(fecha).toLocaleDateString();
+};
+
 const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) => {
   const [showZoom, setShowZoom] = useState(false);
+  const [zoomSrc, setZoomSrc] = useState("");
+
   if (!producto) return null;
 
-  const imageSrc = producto.imagen_principal?.imagen?.startsWith("http")
-    ? producto.imagen_principal?.imagen
-    : `/storage/${producto.imagen_principal?.imagen ?? "images/default-product.png"}`;
+  // Cerrar con tecla Escape
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [onClose]);
 
   return (
     <>
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
-        <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6 relative shadow-lg">
-          <h2 className="text-lg font-semibold mb-2">Detalle del Producto</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full p-6 relative shadow-lg">
+
+          {/* Botón X con fondo circular */}
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 bg-gray-200 dark:bg-gray-700 rounded-full p-1.5 shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          >
+            <X size={18} className="text-gray-700 dark:text-gray-200" />
+          </button>
+
+          <h2 className="text-xl font-semibold mb-2">Detalle del Producto</h2>
           <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
             Información completa del producto seleccionado.
           </p>
 
           <div className="space-y-4">
-            <div className="flex justify-center">
-              <img
-                src={imageSrc}
-                alt={producto.nombre}
-                className="w-40 h-40 object-cover rounded cursor-pointer hover:opacity-90 transition"
-                onClick={() => setShowZoom(true)}
-              />
-            </div>
-
+            {/* Datos básicos */}
             <div><span className="font-semibold">ID:</span> {producto.id}</div>
             <div><span className="font-semibold">Nombre:</span> {producto.nombre}</div>
-            {producto.descripcion && <div><span className="font-semibold">Descripción:</span> {producto.descripcion}</div>}
-            <div><span className="font-semibold">Precio:</span> {producto.precio_activo?.precio_venta}</div>
-            <div><span className="font-semibold">Creado:</span> {producto.created_at ? new Date(producto.created_at).toLocaleString() : "—"}</div>
-            <div><span className="font-semibold">Actualizado:</span> {producto.updated_at ? new Date(producto.updated_at).toLocaleString() : "—"}</div>
+            {producto.descripcion && (
+              <div><span className="font-semibold">Descripción:</span> {producto.descripcion}</div>
+            )}
+            <div><span className="font-semibold">Categoría:</span> {producto.categoria?.nombre ?? "—"}</div>
+            <div><span className="font-semibold">Precio actual:</span> {producto.precio_activo?.precio_venta ?? "—"}</div>
+            <div><span className="font-semibold">Creado:</span> {formatoFecha(producto.created_at)}</div>
+            <div><span className="font-semibold">Actualizado:</span> {formatoFecha(producto.updated_at)}</div>
+
+            {/* Galería de imágenes */}
+            {producto.imagenes && producto.imagenes.length > 0 && (
+              <div>
+                <span className="font-semibold">Imágenes:</span>
+                <div className="grid grid-cols-3 gap-3 mt-2">
+                  {producto.imagenes.map((img) => {
+                    const src = img.imagen.startsWith("http")
+                      ? img.imagen
+                      : `/storage/${img.imagen}`;
+                    return (
+                      <img
+                        key={img.id}
+                        src={src}
+                        alt={producto.nombre}
+                        className="w-full h-28 object-cover rounded cursor-pointer hover:opacity-90 transition"
+                        onClick={() => {
+                          setZoomSrc(src);
+                          setShowZoom(true);
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Historial de precios */}
+            {producto.precios && producto.precios.length > 0 && (
+              <div>
+                <span className="font-semibold">Historial de precios:</span>
+                <table className="w-full mt-2 border text-sm">
+                  <thead>
+                    <tr className="bg-gray-100 dark:bg-gray-700">
+                      <th className="px-2 py-1 text-left">Precio Venta</th>
+                      <th className="px-2 py-1 text-left">Inicio</th>
+                      <th className="px-2 py-1 text-left">Fin</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {producto.precios.map((p) => (
+                      <tr key={p.id} className="border-t">
+                        <td className="px-2 py-1">{p.precio_venta}</td>
+                        <td className="px-2 py-1">{formatoFecha(p.fecha_inicio)}</td>
+                        <td className="px-2 py-1">{formatoFecha(p.fecha_fin)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
 
-          <div className="mt-4 flex justify-end">
+          {/* Botón cerrar abajo */}
+          <div className="mt-6 flex justify-end">
             <Button variant="secondary" onClick={onClose}>Cerrar</Button>
           </div>
         </div>
       </div>
 
-      <ZoomImageModal open={showZoom} onOpenChange={setShowZoom} src={imageSrc} alt={producto.nombre} />
+      {/* Modal de zoom */}
+      <ZoomImageModal open={showZoom} onOpenChange={setShowZoom} src={zoomSrc} alt={producto.nombre} />
     </>
   );
 };
