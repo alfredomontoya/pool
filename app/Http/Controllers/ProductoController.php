@@ -114,35 +114,69 @@ class ProductoController extends Controller
     // Editar producto
     public function update(Request $request, Producto $producto)
     {
-        $request->validate([
+        // Validación
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'categoria_id' => 'required|exists:categorias,id',
             'codigo' => 'nullable|string|max:50',
-            'stock_actual' => 'nullable|numeric',
-            'stock_minimo' => 'nullable|numeric',
-            'unidad_medida' => 'nullable|string|max:20',
+            'stock_actual' => 'required|numeric|min:0',
+            'stock_minimo' => 'required|numeric|min:0',
+            'unidad_medida' => 'required|string|max:20',
             'activo' => 'required|boolean',
-            'imagen' => 'nullable|image|max:2048',
+            'imagenesFiles.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'precio' => 'nullable|array',
+            'precio.precio_venta' => 'nullable|numeric|min:0',
+            'precio.precio_compra' => 'nullable|numeric|min:0',
         ]);
 
-        $data = $request->only([
-            'nombre', 'descripcion', 'categoria_id', 'codigo',
-            'stock_actual', 'stock_minimo', 'unidad_medida', 'activo'
+        // Actualizar datos básicos del producto
+        $producto->update([
+            'nombre' => $validated['nombre'],
+            'descripcion' => $validated['descripcion'] ?? null,
+            'categoria_id' => $validated['categoria_id'],
+            'codigo' => $validated['codigo'] ?? null,
+            'stock_actual' => $validated['stock_actual'],
+            'stock_minimo' => $validated['stock_minimo'],
+            'unidad_medida' => $validated['unidad_medida'],
+            'activo' => $validated['activo'],
+            'updated_by_user_id' => Auth::id(),
         ]);
 
-        $producto->update($data);
-
-        if ($request->hasFile('imagen')) {
-            $producto->imagenes()->create([
-                'url' => $request->file('imagen')->store('productos', 'public'),
-                'es_principal' => true,
-            ]);
+        // Guardar nuevas imágenes si hay
+        if ($request->hasFile('imagenesFiles')) {
+            foreach ($request->file('imagenesFiles') as $index => $file) {
+                $path = $file->store('productos', 'public');
+                $producto->imagenes()->create([
+                    'imagen' => $path,
+                    'es_principal' => $index === 0, // primera imagen como principal
+                    'user_id' => Auth::id(),
+                ]);
+            }
         }
 
-        return redirect()->route('productos.index')
-            ->with('success', "Producto '{$producto->nombre}' actualizado con éxito.");
+        // Actualizar precio si existe
+        if ($request->filled('precio')) {
+            $precioData = $request->input('precio');
+            if (!empty($precioData['precio_venta']) || !empty($precioData['precio_compra'])) {
+                // Desactivar precio anterior activo
+                $producto->precio_activo?->update(['activo' => false, 'fecha_fin' => now()]);
+
+                // Crear nuevo precio
+                $producto->precios()->create([
+                    'precio_venta' => $precioData['precio_venta'] ?? 0,
+                    'precio_compra' => $precioData['precio_compra'] ?? 0,
+                    'activo' => true,
+                    'fecha_inicio' => now(),
+                    'user_id' => Auth::id(),
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Producto actualizado correctamente.');
     }
+
+
 
     // Eliminar producto
     public function destroy(Producto $producto)

@@ -29,10 +29,13 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
+  // Imagen principal
+  const principal = producto.imagenes?.find((img) => img.es_principal);
+
   return (
     <>
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]">
-        <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full p-6 relative shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] p-6 relative shadow-lg overflow-y-auto">
 
           {/* Botón X con fondo circular */}
           <button
@@ -41,6 +44,21 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
           >
             <X size={18} className="text-gray-700 dark:text-gray-200" />
           </button>
+
+          {/* Imagen principal arriba */}
+          {principal && (
+            <div className="flex justify-center mb-4">
+              <img
+                src={principal.imagen.startsWith("http") ? principal.imagen : `/storage/${principal.imagen}`}
+                alt={producto.nombre}
+                className="w-56 h-56 object-cover rounded-lg border-4 border-blue-500 shadow-md cursor-pointer hover:opacity-90 transition"
+                onClick={() => {
+                  setZoomSrc(principal.imagen.startsWith("http") ? principal.imagen : `/storage/${principal.imagen}`);
+                  setShowZoom(true);
+                }}
+              />
+            </div>
+          )}
 
           <h2 className="text-xl font-semibold mb-2">Detalle del Producto</h2>
           <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
@@ -55,7 +73,13 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
               <div><span className="font-semibold">Descripción:</span> {producto.descripcion}</div>
             )}
             <div><span className="font-semibold">Categoría:</span> {producto.categoria?.nombre ?? "—"}</div>
-            <div><span className="font-semibold">Precio actual:</span> {producto.precio_activo?.precio_venta ?? "—"}</div>
+            <div>
+              <span className="font-semibold">Precio actual:</span>{" "}
+              {producto.precio_activo?.precio_venta ?? "—"}{" "}
+              <span className="ml-2 text-xs px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-700">
+                Activo: {producto.precio_activo?.activo ? "Sí" : "No"}
+              </span>
+            </div>
             <div><span className="font-semibold">Creado:</span> {formatoFecha(producto.created_at)}</div>
             <div><span className="font-semibold">Actualizado:</span> {formatoFecha(producto.updated_at)}</div>
 
@@ -65,20 +89,26 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
                 <span className="font-semibold">Imágenes:</span>
                 <div className="grid grid-cols-3 gap-3 mt-2">
                   {producto.imagenes.map((img) => {
-                    const src = img.imagen.startsWith("http")
-                      ? img.imagen
-                      : `/storage/${img.imagen}`;
+                    const src = img.imagen.startsWith("http") ? img.imagen : `/storage/${img.imagen}`;
                     return (
-                      <img
-                        key={img.id}
-                        src={src}
-                        alt={producto.nombre}
-                        className="w-full h-28 object-cover rounded cursor-pointer hover:opacity-90 transition"
-                        onClick={() => {
-                          setZoomSrc(src);
-                          setShowZoom(true);
-                        }}
-                      />
+                      <div key={img.id} className="relative">
+                        <img
+                          src={src}
+                          alt={producto.nombre}
+                          className={`w-full h-28 object-cover rounded cursor-pointer hover:opacity-90 transition ${
+                            img.es_principal ? "border-4 border-blue-500" : "border"
+                          }`}
+                          onClick={() => {
+                            setZoomSrc(src);
+                            setShowZoom(true);
+                          }}
+                        />
+                        {img.es_principal && (
+                          <span className="absolute top-1 left-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded">
+                            Principal
+                          </span>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
@@ -93,6 +123,7 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
                   <thead>
                     <tr className="bg-gray-100 dark:bg-gray-700">
                       <th className="px-2 py-1 text-left">Precio Venta</th>
+                      <th className="px-2 py-1 text-left">Activo</th>
                       <th className="px-2 py-1 text-left">Inicio</th>
                       <th className="px-2 py-1 text-left">Fin</th>
                     </tr>
@@ -101,6 +132,7 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
                     {producto.precios.map((p) => (
                       <tr key={p.id} className="border-t">
                         <td className="px-2 py-1">{p.precio_venta}</td>
+                        <td className="px-2 py-1">{p.activo ? "Sí" : "No"}</td>
                         <td className="px-2 py-1">{formatoFecha(p.fecha_inicio)}</td>
                         <td className="px-2 py-1">{formatoFecha(p.fecha_fin)}</td>
                       </tr>

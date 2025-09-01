@@ -16,8 +16,8 @@ class ProductoPrecioFactory extends Factory
     $producto = Producto::inRandomOrder()->first() ?? Producto::factory()->create();
     $user = User::inRandomOrder()->first() ?? User::factory()->create();
 
-    $precioCompra = $this->faker->randomFloat(2, 10, 300);
-    $precioVenta = $precioCompra + $this->faker->randomFloat(2, 5, 200);
+    $precioCompra = $this->faker->randomFloat(2, 10, 100);
+    $precioVenta = $precioCompra + $this->faker->randomFloat(2, 5, 50);
 
     return [
       'producto_id' => $producto->id,

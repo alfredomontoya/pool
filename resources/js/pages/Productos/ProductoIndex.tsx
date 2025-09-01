@@ -81,12 +81,14 @@ const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
         )}
 
         {editProducto && (
-          <ProductoEditModal
-            producto={editProducto}
-            onClose={() => setEditProducto(null)}
-            onSaved={(msg) => handleSaved(msg)}
-          />
-        )}
+            <ProductoEditModal
+                show={true}
+                categorias={categorias}  // asegúrate de tenerlas en el estado o props
+                producto={editProducto}
+                onClose={() => setEditProducto(null)}
+                onSaved={(msg) => handleSaved(msg)}
+            />
+            )}
 
         {detailProducto && (
           <ProductoDetailModal
