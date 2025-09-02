@@ -115,6 +115,7 @@ class ProductoController extends Controller
     public function update(Request $request, Producto $producto)
     {
         // Validación
+        // dd($request->all());
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
@@ -130,6 +131,8 @@ class ProductoController extends Controller
             'precio.precio_compra' => 'nullable|numeric|min:0',
         ]);
 
+        dd($validated);
+
         // Actualizar datos básicos del producto
         $producto->update([
             'nombre' => $validated['nombre'],
@@ -140,7 +143,7 @@ class ProductoController extends Controller
             'stock_minimo' => $validated['stock_minimo'],
             'unidad_medida' => $validated['unidad_medida'],
             'activo' => $validated['activo'],
-            'updated_by_user_id' => Auth::id(),
+            'user_id' => Auth::id(),
         ]);
 
         // Guardar nuevas imágenes si hay

@@ -14,9 +14,10 @@ interface Props {
   onEdit: (producto: Producto) => void;
   onDelete: (producto: Producto) => void;
   onDetail: (producto: Producto) => void;
+  onSelect: (producto: Producto) => void;
 }
 
-const ProductoItemsTable: React.FC<Props> = ({ productos, filters, onEdit, onDelete, onDetail }) => {
+const ProductoItemsTable: React.FC<Props> = ({ productos, filters, onEdit, onDelete, onDetail, onSelect }) => {
   const handleSort = (field: string) => {
     const direction = filters.sort === field && filters.direction === "asc" ? "desc" : "asc";
     router.get("/productos", { sort: field, direction }, { preserveState: true });
@@ -93,6 +94,16 @@ const ProductoItemsTable: React.FC<Props> = ({ productos, filters, onEdit, onDel
                     className="px-2 py-1"
                   >
                     Editar
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelect(prod);
+                    }}
+                    variant={"warning"}
+                    className="px-2 py-1"
+                  >
+                    Imagenes
                   </Button>
                   <Button
                     onClick={(e) => {

@@ -11,6 +11,7 @@ import ProductoSearch from "@/components/Productos/ProductoSearch";
 import { Producto, PaginatedProductos } from "@/interfaces/Productos.Interface";
 import { Categoria } from "@/interfaces/Categorias.Interface";
 import { Button } from "@/components/ui/button";
+import ProductoImagenes from "@/components/Productos/ProductoImagenes";
 
 interface Props {
   productos: PaginatedProductos;
@@ -35,6 +36,8 @@ const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
   const [editProducto, setEditProducto] = useState<Producto | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Producto | null>(null);
   const [detailProducto, setDetailProducto] = useState<Producto | null>(null);
+
+    const [selectedProduct, setSelectedProduct] = useState<Producto | null>(productos.data[0]);
 
   const handleDelete = (producto: Producto) => {
     router.delete(`/productos/${producto.id}`, {
@@ -69,6 +72,10 @@ const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
           onEdit={setEditProducto}
           onDelete={setConfirmDelete}
           onDetail={setDetailProducto}
+          onSelect={(prod) => {
+            setSelectedProduct(prod);
+            // setShowImagenes(true);
+          }}
         />
 
         {showCreate && (
@@ -109,6 +116,10 @@ const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
           <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
         )}
       </div>
+      <ProductoImagenes
+        productoSeleccionado={ selectedProduct }
+        onClose={() => setSelectedProduct(null)}
+        />
     </AppLayout>
   );
 };
