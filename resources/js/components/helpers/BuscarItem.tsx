@@ -61,7 +61,7 @@ export default function BuscarItem<T>({
       {!open && (
         <Card
           onClick={() => setOpen(true)}
-          className="cursor-pointer px-4 py-2 text-gray-600"
+          className="cursor-pointer px-4 py-1 text-gray-600"
         >
           {selected
             ? displayKey
@@ -80,7 +80,7 @@ export default function BuscarItem<T>({
             onChange={(e) => setQuery(e.target.value)}
             placeholder={placeholder}
             autoFocus
-            className="w-full border-0 focus:ring-0"
+            // className="w-full border-0 focus:ring-0"
           />
           <ul className="max-h-60 overflow-y-auto">
             {filtered.map((item, idx) => (
