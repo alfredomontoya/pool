@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { usePage, router } from "@inertiajs/react";
+import { usePage, router, Link } from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
 import ProductoItemsTable from "@/components/Productos/ProductoItemsTable";
 import ProductoCreateModal from "@/components/Productos/ProductoCreateModal";
@@ -12,6 +12,8 @@ import { Producto, PaginatedProductos } from "@/interfaces/Productos.Interface";
 import { Categoria } from "@/interfaces/Categorias.Interface";
 import { Button } from "@/components/ui/button";
 import ProductoImagenes from "@/components/Productos/ProductoImagenes";
+import { BreadcrumbItem } from "@/types";
+import FloatingCreateButton from "@/components/Productos/FloatingCreateButton";
 
 interface Props {
   productos: PaginatedProductos;
@@ -23,10 +25,6 @@ interface Props {
   };
 }
 
-interface BreadcrumbItem {
-  title: string;
-  href: string;
-}
 
 const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
   const { flash } = usePage().props as any;
@@ -56,13 +54,13 @@ const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="p-4">
-        <Button
-          onClick={() => setShowCreate(true)}
-          variant="default"
-          className="mb-4"
+        <FloatingCreateButton />
+        <Link
+          href="/productos/create"
+          className="mb-4 bg-black text-white px-4 py-2 rounded hover:bg-black/50 decoration-none inline-block"
         >
           Nuevo Producto
-        </Button>
+        </Link>
 
         <ProductoSearch initialSearch={filters.search} />
 
@@ -116,10 +114,10 @@ const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
           <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
         )}
       </div>
-      <ProductoImagenes
+      {/* <ProductoImagenes
         productoSeleccionado={ selectedProduct }
         onClose={() => setSelectedProduct(null)}
-        />
+        /> */}
     </AppLayout>
   );
 };

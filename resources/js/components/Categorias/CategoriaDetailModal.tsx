@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Categoria } from "@/interfaces/Categorias.Interface"
 import { Button } from "@/components/ui/button"
-import ZoomImageModal from "@/components/helpers/ZoomImageModal"
+import ZoomImageModal from "@/components/Helpers/ZoomImageModal"
 
 interface DetailModalProps {
   categoria: Categoria | null

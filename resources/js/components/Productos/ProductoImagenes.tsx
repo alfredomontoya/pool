@@ -3,7 +3,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Minus, Trash2, Star, Replace } from "lucide-react";
 import { Producto, ProductoImagen } from "@/interfaces/Productos.Interface";
-import ZoomImageModal from "../helpers/ZoomImageModal";
+import ZoomImageModal from "../Helpers/ZoomImageModal";
 import axios from "axios";
 
 interface ProductoImagenesProps {
