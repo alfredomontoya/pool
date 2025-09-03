@@ -46,10 +46,24 @@ class ProductoController extends Controller
         ]);
     }
 
-    public function create(){
+    public function create(Request $request){
         $categorias = \App\Models\Categoria::all();
-        return Inertia::render('Productos/ProductoCreate', [
+        return Inertia::render('Productos/ProductoCreateOrUpdated', [
             'categorias' => $categorias, // <-- agregado
+        ]);
+    }
+
+    public function createOrUpdate(Request $request){
+        $categorias = \App\Models\Categoria::all();
+        $producto = null;
+
+        if ($request->id) {
+            $producto = Producto::find($request->id);
+        }
+
+        return Inertia::render('Productos/ProductoCreateOrUpdated', [
+            'categorias' => $categorias, // <-- agregado
+            'producto' => $producto
         ]);
     }
 
@@ -58,6 +72,7 @@ class ProductoController extends Controller
     {
         // Validación básica
         $validated = $request->validate([
+            'id' => 'nullable|exists:productos,id',
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'categoria_id' => 'required|exists:categorias,id',
@@ -113,7 +128,10 @@ class ProductoController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Producto creado correctamente.');
+        return response()->json([
+            'success' => 'Producto creado correctamente.',
+            'producto_id' => $producto->id,
+        ]);
     }
 
     // Editar producto

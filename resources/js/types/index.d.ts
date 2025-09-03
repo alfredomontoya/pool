@@ -41,3 +41,21 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+import "@inertiajs/core";
+declare module "@inertiajs/core" {
+  interface PageProps {
+    flash: {
+      success?: string;
+      error?: string;
+      producto_id?: number;
+    };
+    auth?: {
+      user?: {
+        id: number;
+        name: string;
+        email: string;
+      };
+    };
+  }
+}

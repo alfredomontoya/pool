@@ -10,7 +10,7 @@ export default function FloatingCreateButton() {
 
       {/* Botón flotante */}
       <Link
-        href="/productos/create"
+        href="/productos/createOrUpdate"
         className="
           w-14 h-14
           bg-primary text-primary-foreground

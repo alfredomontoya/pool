@@ -56,7 +56,7 @@ const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
       <div className="p-4">
         <FloatingCreateButton />
         <Link
-          href="/productos/create"
+          href="/productos/createOrUpdate/1"
           className="mb-4 bg-black text-white px-4 py-2 rounded hover:bg-black/50 decoration-none inline-block"
         >
           Nuevo Producto

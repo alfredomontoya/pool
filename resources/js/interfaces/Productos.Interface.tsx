@@ -1,7 +1,7 @@
 import { Categoria } from "./Categorias.Interface";
 
 export interface Producto {
-  id: number;
+  id: number | null;
   nombre: string;
   descripcion?: string;
   categoria_id: number;
@@ -27,7 +27,6 @@ export interface Producto {
 /** Para creación (sin id, timestamps ni relaciones) */
 export type ProductoCrear = Omit<
   Producto,
-  | "id"
   | "created_at"
   | "updated_at"
   | "imagenes"

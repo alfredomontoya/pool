@@ -10,6 +10,7 @@ interface BuscarItemProps<T> {
   placeholder?: string;
   displayKey?: (item: T) => string;
   maxResults?: number; // límite de resultados mostrados
+  error?: string
 }
 
 export default function BuscarItem<T>({
@@ -20,6 +21,7 @@ export default function BuscarItem<T>({
   placeholder = "Buscar...",
   displayKey,
   maxResults = 5, // por defecto 5
+  error
 }: BuscarItemProps<T>) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -59,17 +61,21 @@ export default function BuscarItem<T>({
     <div ref={containerRef} className="relative w-full">
       {/* Card que muestra seleccionado o placeholder */}
       {!open && (
-        <Card
-          onClick={() => setOpen(true)}
-          className="cursor-pointer px-4 py-1 text-gray-600"
-        >
-          {selected
-            ? displayKey
-              ? displayKey(selected)
-              : String(selected[labelKey])
-            : placeholder}
-        </Card>
+        <>
+            <Card
+            onClick={() => setOpen(true)}
+            className="cursor-pointer px-4 py-1 pt-2 text-gray-600"
+            >
+            {selected
+                ? displayKey
+                ? displayKey(selected)
+                : String(selected[labelKey])
+                : placeholder}
+            </Card>
+            {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
+        </>
       )}
+
 
       {/* Input + lista cuando está abierto */}
       {open && (

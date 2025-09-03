@@ -21,7 +21,7 @@ export function TextInput({ label, placeholder, value, onChange, error, rule, ty
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="peer w-full border rounded-lg p-2 focus:outline-none focus:border-blue-500"
+        className="peer w-full border rounded-lg p-2 focus:outline-none"
       />
       {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
     </div>

@@ -25,6 +25,7 @@ export default function ProductoCreateModal({ show, onClose, categorias, onSaved
   const [precioInicial, setPrecioInicial] = useState<{ precio_venta?: number; precio_compra?: number }>({});
 
   const { data, setData, post, reset, errors } = useForm<ProductoCrear & { imagenes?: File[]; precio?: any }>({
+    id: null,
     nombre: "",
     descripcion: "",
     categoria_id: 0,

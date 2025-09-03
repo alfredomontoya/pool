@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', SetUserId::class])->group(function () {
     Route::resource('clientes', ClienteController::class);
     Route::resource('categorias', CategoriaController::class);
+    Route::get('productos/createOrUpdate/{id}', [ProductoController::class, 'createOrUpdate'])->name('productos.createOrUpdate');
     Route::resource('productos', ProductoController::class);
 });
 
