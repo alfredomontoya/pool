@@ -15,7 +15,7 @@ import Toast from "@/components/Toast";
 import axios from "axios";
 
 interface Props {
-    producto: Producto | null;
+  producto: Producto | null;
   categorias: Categoria[];
   onSaved?: (msg: string) => void;
 }
@@ -28,14 +28,15 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
     categoria_id: producto?.categoria_id || 0,
     codigo: producto?.codigo || "",
     stock_actual: producto?.stock_actual || 0,
-    stock_minimo: 0,
-    unidad_medida: "",
-    activo: true,
+    stock_minimo: producto?.stock_minimo || 0,
+    unidad_medida: producto?.unidad_medida || "",
+    activo: producto?.activo ?? true,
   });
 
+  console.log(producto);
   const { flash } = usePage().props as any;
   const [toastMessage, setToastMessage] = useState(flash?.success || null);
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<Categoria | null>(null);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<Categoria | null>(producto?.categoria || null);
 
   const breadcrumbs: BreadcrumbItem[] = [{ title: "Productos", href: "/productos" }];
 
@@ -43,28 +44,38 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
   // Submit con Axios
   // ----------------------
   const handleSubmit = () => {
-    axios.post(route("productos.store"), data)
-      .then(res => {
-        console.log(res.data)
+    const isEditing = Boolean(producto?.id);
+    const url = isEditing
+        ? route("productos.update", producto?.id)
+        : route("productos.store");
+
+    const method = isEditing ? "put" : "post";
+
+    console.log(isEditing, url, method, data);
+
+
+    axios[method](url, data)
+        .then((res) => {
         setToastMessage(res.data.success);
         setData("id", res.data.producto_id);
 
         // Reset de formulario y categoría
-        // reset();
         setCategoriaSeleccionada(null);
 
         // Callback al padre
         onSaved?.(res.data.success);
-      })
-      .catch(err => {
+        })
+        .catch((err) => {
         if (err.response?.status === 422) {
-          // errores de validación
-          console.log(err.response.data.errors);
+            // errores de validación
+            console.log(err.response.data.errors);
         } else {
-          console.error(err);
+            // otros errores
+            console.log('otro tipo de error');
+            console.error(err);
         }
-      });
-  };
+        });
+    };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>

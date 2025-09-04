@@ -46,10 +46,19 @@ class ProductoController extends Controller
         ]);
     }
 
-    public function create(Request $request){
+    public function create(){
         $categorias = \App\Models\Categoria::all();
         return Inertia::render('Productos/ProductoCreateOrUpdated', [
             'categorias' => $categorias, // <-- agregado
+        ]);
+    }
+
+    public function edit($id){
+        $categorias = \App\Models\Categoria::all();
+        $producto = Producto::with('categoria')->find($id);
+        return Inertia::render('Productos/ProductoCreateOrUpdated', [
+            'categorias' => $categorias, // <-- agregado
+            'producto' => $producto
         ]);
     }
 
@@ -70,6 +79,7 @@ class ProductoController extends Controller
     // Crear producto
     public function store(Request $request)
     {
+        // dd('$request->all()');
         // Validación básica
         $validated = $request->validate([
             'id' => 'nullable|exists:productos,id',
@@ -88,17 +98,20 @@ class ProductoController extends Controller
         ]);
 
         // Crear producto
-        $producto = Producto::create([
-            'nombre' => $validated['nombre'],
-            'descripcion' => $validated['descripcion'] ?? null,
-            'categoria_id' => $validated['categoria_id'],
-            'codigo' => $validated['codigo'] ?? null,
-            'stock_actual' => $validated['stock_actual'],
-            'stock_minimo' => $validated['stock_minimo'],
-            'unidad_medida' => $validated['unidad_medida'],
-            'activo' => $validated['activo'],
-            'user_id' => Auth::id(),
-        ]);
+        $producto = Producto::updateOrCreate(
+            ['id' => $validated['id'] ?? null], // condición de búsqueda
+            [
+                'nombre' => $validated['nombre'],
+                'descripcion' => $validated['descripcion'] ?? null,
+                'categoria_id' => $validated['categoria_id'],
+                'codigo' => $validated['codigo'] ?? null,
+                'stock_actual' => $validated['stock_actual'],
+                'stock_minimo' => $validated['stock_minimo'],
+                'unidad_medida' => $validated['unidad_medida'],
+                'activo' => $validated['activo'],
+                'user_id' => Auth::id(),
+            ]
+        );
 
         // Guardar imágenes
         if ($request->hasFile('imagenes')) {
@@ -129,7 +142,7 @@ class ProductoController extends Controller
         }
 
         return response()->json([
-            'success' => 'Producto creado correctamente.',
+            'success' => 'Producto creado/actualizado correctamente.',
             'producto_id' => $producto->id,
         ]);
     }
