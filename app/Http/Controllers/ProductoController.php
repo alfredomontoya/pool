@@ -55,7 +55,7 @@ class ProductoController extends Controller
 
     public function edit($id){
         $categorias = \App\Models\Categoria::all();
-        $producto = Producto::with('categoria')->find($id);
+        $producto = Producto::with(['categoria', 'precioActivo'])->find($id);
         return Inertia::render('Productos/ProductoCreateOrUpdated', [
             'categorias' => $categorias, // <-- agregado
             'producto' => $producto
@@ -143,7 +143,7 @@ class ProductoController extends Controller
 
         return response()->json([
             'success' => 'Producto creado/actualizado correctamente.',
-            'producto_id' => $producto->id,
+            'producto' => $producto,
         ]);
     }
 
@@ -151,8 +151,8 @@ class ProductoController extends Controller
     public function update(Request $request, Producto $producto)
     {
         // Validación
-        // dd($request->all());
         $validated = $request->validate([
+            'id' => 'nullable|exists:productos,id',
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'categoria_id' => 'required|exists:categorias,id',
@@ -161,58 +161,74 @@ class ProductoController extends Controller
             'stock_minimo' => 'required|numeric|min:0',
             'unidad_medida' => 'required|string|max:20',
             'activo' => 'required|boolean',
-            'imagenesFiles.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'precio' => 'nullable|array',
-            'precio.precio_venta' => 'nullable|numeric|min:0',
-            'precio.precio_compra' => 'nullable|numeric|min:0',
+            'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'precio_venta' => 'nullable|numeric|min:0',
+            'precio_compra' => 'nullable|numeric|min:0',
         ]);
 
-        dd($validated);
+        // Guardar datos básicos
+        $producto = $this->guardarDatosProducto($validated);
 
-        // Actualizar datos básicos del producto
-        $producto->update([
-            'nombre' => $validated['nombre'],
-            'descripcion' => $validated['descripcion'] ?? null,
-            'categoria_id' => $validated['categoria_id'],
-            'codigo' => $validated['codigo'] ?? null,
-            'stock_actual' => $validated['stock_actual'],
-            'stock_minimo' => $validated['stock_minimo'],
-            'unidad_medida' => $validated['unidad_medida'],
-            'activo' => $validated['activo'],
-            'user_id' => Auth::id(),
+        // Guardar precios si cambian
+        $this->guardarPrecios($producto, $validated['precio_venta'] ?? 0, $validated['precio_compra'] ?? 0);
+
+        return response()->json([
+            'success' => "Producto {$producto->id} actualizado correctamente.",
+            'producto' => $producto
         ]);
+    }
 
-        // Guardar nuevas imágenes si hay
-        if ($request->hasFile('imagenesFiles')) {
-            foreach ($request->file('imagenesFiles') as $index => $file) {
-                $path = $file->store('productos', 'public');
-                $producto->imagenes()->create([
-                    'imagen' => $path,
-                    'es_principal' => $index === 0, // primera imagen como principal
-                    'user_id' => Auth::id(),
-                ]);
-            }
+    /**
+     * Guarda un nuevo precio solo si hay cambios en precio_venta o precio_compra.
+     */
+    protected function guardarPrecios(Producto $producto, float $precioVentaNuevo, float $precioCompraNuevo): void
+    {
+        $precioActivo = $producto->precioActivo;
+
+        if (
+            $precioActivo === null ||
+            $precioActivo->precio_venta != $precioVentaNuevo ||
+            $precioActivo->precio_compra != $precioCompraNuevo
+        ) {
+            // Desactivar precios anteriores
+            ProductoPrecio::where('producto_id', $producto->id)
+                ->where('activo', true)
+                ->update(['activo' => false]);
+
+            // Crear nuevo precio
+            ProductoPrecio::create([
+                'producto_id' => $producto->id,
+                'precio_venta' => $precioVentaNuevo,
+                'precio_compra' => $precioCompraNuevo,
+                'activo' => true,
+                'fecha_inicio' => now(),
+                'user_id' => Auth::id(),
+            ]);
         }
+    }
 
-        // Actualizar precio si existe
-        if ($request->filled('precio')) {
-            $precioData = $request->input('precio');
-            if (!empty($precioData['precio_venta']) || !empty($precioData['precio_compra'])) {
-                // Desactivar precio anterior activo
-                $producto->precio_activo?->update(['activo' => false, 'fecha_fin' => now()]);
+    /**
+     * Guarda o actualiza los datos del producto.
+     */
+    protected function guardarDatosProducto(array $validated): Producto
+    {
+        $producto = Producto::updateOrCreate(
+            ['id' => $validated['id'] ?? null],
+            [
+                'nombre' => $validated['nombre'],
+                'descripcion' => $validated['descripcion'] ?? null,
+                'categoria_id' => $validated['categoria_id'],
+                'codigo' => $validated['codigo'] ?? null,
+                'stock_actual' => $validated['stock_actual'],
+                'stock_minimo' => $validated['stock_minimo'],
+                'unidad_medida' => $validated['unidad_medida'],
+                'activo' => $validated['activo'],
+                'user_id' => Auth::id(),
+            ]
+        );
 
-                // Crear nuevo precio
-                $producto->precios()->create([
-                    'precio_venta' => $precioData['precio_venta'] ?? 0,
-                    'precio_compra' => $precioData['precio_compra'] ?? 0,
-                    'activo' => true,
-                    'fecha_inicio' => now(),
-                    'user_id' => Auth::id(),
-                ]);
-            }
-        }
-
-        return redirect()->back()->with('success', 'Producto actualizado correctamente.');
+        // Refrescar para traer relaciones actualizadas
+        return Producto::with('precioActivo')->find($producto->id);
     }
 
 

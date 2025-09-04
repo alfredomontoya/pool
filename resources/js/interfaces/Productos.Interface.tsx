@@ -5,10 +5,10 @@ export interface Producto {
   nombre: string;
   descripcion?: string;
   categoria_id: number;
-  codigo?: string;
-  stock_actual: number;
-  stock_minimo: number;
-  unidad_medida: string;
+  codigo?: string | null;
+  stock_actual: number | null;
+  stock_minimo: number | null;
+  unidad_medida: string | null;
   activo: boolean;
 
   // Relaciones
@@ -25,7 +25,7 @@ export interface Producto {
 }
 
 /** Para creación (sin id, timestamps ni relaciones) */
-export type ProductoCrear = Omit<
+export interface ProductoCrear extends Omit<
   Producto,
   | "created_at"
   | "updated_at"
@@ -36,7 +36,11 @@ export type ProductoCrear = Omit<
   | "categoria"
   | "user"
   | "updated_by_user"
->;
+> {
+  saludo?: string;
+  precio_compra?: number | null;
+  precio_venta?: number | null;
+}
 
 /** Paginación */
 export interface PaginatedProductos {

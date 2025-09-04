@@ -3,9 +3,8 @@ import { Categoria } from "@/interfaces/Categorias.Interface";
 import AppLayout from "@/layouts/app-layout";
 import { BreadcrumbItem } from "@/types";
 import { useForm, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Producto, ProductoCrear } from "@/interfaces/Productos.Interface";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TextInput } from "@/components/Helpers/TextInput";
@@ -13,6 +12,7 @@ import { TextArea } from "@/components/Helpers/TextArea";
 import { Label } from "@/components/ui/label";
 import Toast from "@/components/Toast";
 import axios from "axios";
+import { AlertTriangle, CheckCircle2 } from "lucide-react";
 
 interface Props {
   producto: Producto | null;
@@ -21,68 +21,111 @@ interface Props {
 }
 
 const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
-  const { data, setData, reset, errors } = useForm<ProductoCrear>({
-    id: producto?.id || null,
-    nombre: producto?.nombre || "",
-    descripcion: producto?.descripcion || "",
-    categoria_id: producto?.categoria_id || 0,
-    codigo: producto?.codigo || "",
-    stock_actual: producto?.stock_actual || 0,
-    stock_minimo: producto?.stock_minimo || 0,
-    unidad_medida: producto?.unidad_medida || "",
-    activo: producto?.activo ?? true,
-  });
+    // Formulario con Inertia useForm
 
-  console.log(producto);
+    console.log('producto en form');
+    console.log(producto);
+  const { data, setData, errors } = useForm<ProductoCrear & Record<string, any>>({
+  id: producto?.id || null,
+  nombre: producto?.nombre || "",
+  descripcion: producto?.descripcion || "",
+  categoria_id: producto?.categoria_id || 0,
+  codigo: producto?.codigo || null,
+  stock_actual: producto?.stock_actual || 0,
+  stock_minimo: producto?.stock_minimo || 0,
+  unidad_medida: producto?.unidad_medida || "",
+  activo: producto?.activo ?? true,
+  precio_compra: producto?.precio_activo?.precio_compra ?? 0,
+  precio_venta: producto?.precio_activo?.precio_venta ?? 0,
+  saludo: "Hola",
+});
+
   const { flash } = usePage().props as any;
   const [toastMessage, setToastMessage] = useState(flash?.success || null);
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<Categoria | null>(producto?.categoria || null);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<Categoria | null>(
+    producto?.categoria || null
+  );
 
   const breadcrumbs: BreadcrumbItem[] = [{ title: "Productos", href: "/productos" }];
+
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [initialData, setInitialData] = useState(data); // referencia de datos guardados
 
   // ----------------------
   // Submit con Axios
   // ----------------------
   const handleSubmit = () => {
-    const isEditing = Boolean(producto?.id);
+    const isEditing = Boolean(initialData?.id);
+    console.log('initialData', initialData);
     const url = isEditing
-        ? route("productos.update", producto?.id)
-        : route("productos.store");
+      ? route("productos.update", initialData?.id)
+      : route("productos.store");
 
     const method = isEditing ? "put" : "post";
 
-    console.log(isEditing, url, method, data);
-
-
     axios[method](url, data)
-        .then((res) => {
+      .then((res) => {
         setToastMessage(res.data.success);
-        setData("id", res.data.producto_id);
 
-        // Reset de formulario y categoría
-        setCategoriaSeleccionada(null);
+        // actualizar referencia de datos guardados
+        setInitialData({ ...data, id: res.data.producto.id });
+        setData("id", res.data.producto.id); // actualizar id en el formulario
+
+        setUnsavedChanges(false);
 
         // Callback al padre
         onSaved?.(res.data.success);
-        })
-        .catch((err) => {
+      })
+      .catch((err) => {
         if (err.response?.status === 422) {
-            // errores de validación
-            console.log(err.response.data.errors);
+          console.log(err.response.data.errors);
         } else {
-            // otros errores
-            console.log('otro tipo de error');
-            console.error(err);
+          console.error(err);
         }
-        });
-    };
+      });
+  };
+
+  // Detectar cambios comparando contra initialData
+  useEffect(() => {
+    console.log('data changed:', data);
+    console.log('initialData:', initialData);
+    const hasChanges =
+      data.nombre !== initialData.nombre ||
+      data.descripcion !== initialData.descripcion ||
+      data.codigo !== initialData.codigo ||
+      data.stock_actual !== initialData.stock_actual ||
+      data.stock_minimo !== initialData.stock_minimo ||
+      data.unidad_medida !== initialData.unidad_medida ||
+      data.activo !== initialData.activo ||
+      data.categoria_id !== initialData.categoria_id ||
+      Number(data.precio_venta) !== Number(initialData.precio_venta) ||
+      Number(data.precio_compra) !== Number(initialData.precio_compra);
+
+    setUnsavedChanges(hasChanges);
+  }, [data, initialData]);
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">
-          {producto?.id ? "Editar" : "Crear"} Producto <span className="text--secondary">{producto?.id && `#${producto.id}`}</span>
+          {initialData?.id ? "Editar" : "Crear"} Producto{" "}
+          <span className="text--secondary">{initialData?.id && `#${initialData.id}`}</span>
         </h1>
+
+        {/* Aviso de cambios sin guardar o guardado */}
+        {unsavedChanges ? (
+          <div className="mb-4 flex items-center gap-2 rounded-md bg-yellow-100 p-2 text-yellow-800 text-sm shadow">
+            <AlertTriangle className="w-5 h-5 text-yellow-600" />
+            <span>Tienes cambios sin guardar</span>
+          </div>
+        ) : (
+          producto?.id && (
+            <div className="mb-4 flex items-center gap-2 rounded-md bg-green-100 p-2 text-green-800 text-sm shadow">
+              <CheckCircle2 className="w-5 h-5 text-green-600" />
+              <span>Producto guardado</span>
+            </div>
+          )
+        )}
 
         {/* Formulario */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -120,7 +163,7 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
               label="Código"
               type="text"
               placeholder="Código del producto"
-              value={data.codigo}
+              value={data.codigo ?? ""}
               onChange={(val) => setData("codigo", val)}
               error={errors.codigo}
             />
@@ -171,6 +214,30 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
             />
           </div>
 
+          {/* Precio de Compra */}
+          <div>
+            <TextInput
+              label="Precio de Compra"
+              type="number"
+              value={data.precio_compra}
+              onChange={(val) => setData("precio_compra", Number(val))}
+              error={errors.precio_compra}
+            />
+          </div>
+
+          {/* Precio de Venta */}
+          <div>
+            <TextInput
+              label="Precio de Venta"
+              type="number"
+              value={data.precio_venta}
+              onChange={(val) => setData("precio_venta", Number(val))}
+              error={errors.precio_venta}
+            />
+          </div>
+
+
+
           {/* Activo */}
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -179,13 +246,17 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
               checked={data.activo}
               onClick={() => setData("activo", !data.activo)}
             />
-            <label htmlFor="activo" className="text-sm">Activo</label>
+            <label htmlFor="activo" className="text-sm">
+              Activo
+            </label>
           </div>
         </div>
 
         {/* Botón Guardar */}
         <div className="mt-6">
-          <Button variant="default" onClick={handleSubmit}>Guardar</Button>
+          <Button variant="default" onClick={handleSubmit}>
+            Guardar
+          </Button>
         </div>
 
         {/* Toast */}
