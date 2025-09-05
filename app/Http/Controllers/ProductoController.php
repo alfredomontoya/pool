@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductoRequest;
 use App\Models\Producto;
 use App\Models\Categoria;
 use App\Models\ProductoImagen;
@@ -55,7 +56,7 @@ class ProductoController extends Controller
 
     public function edit($id){
         $categorias = \App\Models\Categoria::all();
-        $producto = Producto::with(['categoria', 'precioActivo'])->find($id);
+        $producto = Producto::with(['categoria', 'precioActivo', 'imagenes'])->find($id);
         return Inertia::render('Productos/ProductoCreateOrUpdated', [
             'categorias' => $categorias, // <-- agregado
             'producto' => $producto
@@ -148,23 +149,10 @@ class ProductoController extends Controller
     }
 
     // Editar producto
-    public function update(Request $request, Producto $producto)
+    public function update(ProductoRequest $request, Producto $producto)
     {
         // Validación
-        $validated = $request->validate([
-            'id' => 'nullable|exists:productos,id',
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'categoria_id' => 'required|exists:categorias,id',
-            'codigo' => 'nullable|string|max:50',
-            'stock_actual' => 'required|numeric|min:0',
-            'stock_minimo' => 'required|numeric|min:0',
-            'unidad_medida' => 'required|string|max:20',
-            'activo' => 'required|boolean',
-            'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'precio_venta' => 'nullable|numeric|min:0',
-            'precio_compra' => 'nullable|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         // Guardar datos básicos
         $producto = $this->guardarDatosProducto($validated);

@@ -65,6 +65,13 @@ export interface ProductoImagen {
   updated_at: string;
 }
 
+export interface ProductoImagenCreate extends Omit<ProductoImagen, "created_at" | "updated_at"> {
+    producto_id: number;
+    imagen: string;
+    es_principal: boolean;
+    user_id: number;
+}
+
 export interface ProductoPrecio {
   id: number;
   producto_id: number;

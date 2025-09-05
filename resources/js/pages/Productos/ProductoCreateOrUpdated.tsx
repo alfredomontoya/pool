@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import Toast from "@/components/Toast";
 import axios from "axios";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import FloatingCreateButton from "@/components/Productos/FloatingCreateButton";
+import ProductoImagenesManager from "@/components/Productos/ProductoImagenManager";
 
 interface Props {
   producto: Producto | null;
@@ -106,6 +108,7 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
+        <FloatingCreateButton />
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">
           {initialData?.id ? "Editar" : "Crear"} Producto{" "}
@@ -258,6 +261,11 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
             Guardar
           </Button>
         </div>
+
+        <ProductoImagenesManager
+            productoId={producto?.id || initialData.id}
+            imagenesGuardadas={producto?.imagenes || []}
+            />
 
         {/* Toast */}
         {toastMessage && (

@@ -122,7 +122,8 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
                 <table className="w-full mt-2 border text-sm">
                   <thead>
                     <tr className="bg-gray-100 dark:bg-gray-700">
-                      <th className="px-2 py-1 text-left">Precio Venta</th>
+                        <th className="px-2 py-1 text-left">Precio Venta</th>
+                      <th className="px-2 py-1 text-left">Precio Compra</th>
                       <th className="px-2 py-1 text-left">Activo</th>
                       <th className="px-2 py-1 text-left">Inicio</th>
                       <th className="px-2 py-1 text-left">Fin</th>
@@ -132,6 +133,7 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
                     {producto.precios.map((p) => (
                       <tr key={p.id} className="border-t">
                         <td className="px-2 py-1">{p.precio_venta}</td>
+                        <td className="px-2 py-1">{p.precio_compra}</td>
                         <td className="px-2 py-1">{p.activo ? "Sí" : "No"}</td>
                         <td className="px-2 py-1">{formatoFecha(p.fecha_inicio)}</td>
                         <td className="px-2 py-1">{formatoFecha(p.fecha_fin)}</td>
