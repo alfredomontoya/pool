@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { usePage, router, Link } from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
 import ProductoItemsTable from "@/components/Productos/ProductoItemsTable";
-import ProductoCreateModal from "@/components/Productos/ProductoCreateModal";
 import ProductoEditModal from "@/components/Productos/ProductoEditModal";
 import ProductoDetailModal from "@/components/Productos/ProductoDetailModal";
 import ConfirmModal from "@/components/ConfirmModal";
@@ -75,15 +74,6 @@ const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
             // setShowImagenes(true);
           }}
         />
-
-        {showCreate && (
-          <ProductoCreateModal
-            show={showCreate}
-            onClose={() => setShowCreate(false)}
-            onSaved={(msg) => handleSaved(msg)}
-            categorias={categorias} // <-- pasamos categorías
-          />
-        )}
 
         {editProducto && (
             <ProductoEditModal

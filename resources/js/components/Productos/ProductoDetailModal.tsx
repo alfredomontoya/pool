@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Producto } from "@/interfaces/Productos.Interface";
 import { Button } from "../ui/button";
-import ZoomImageModal from "../Helpers/ZoomImageModal";
+import ZoomImageModal from "../helpers/ZoomImageModal";
 import { X } from "lucide-react";
 
 interface DetailModalProps {

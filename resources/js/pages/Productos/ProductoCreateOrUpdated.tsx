@@ -1,4 +1,4 @@
-import BuscarItem from "@/components/Helpers/BuscarItem";
+import BuscarItem from "@/components/helpers/BuscarItem";
 import { Categoria } from "@/interfaces/Categorias.Interface";
 import AppLayout from "@/layouts/app-layout";
 import { BreadcrumbItem } from "@/types";
@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import { Producto, ProductoCrear } from "@/interfaces/Productos.Interface";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TextInput } from "@/components/Helpers/TextInput";
-import { TextArea } from "@/components/Helpers/TextArea";
+import { TextInput } from "@/components/helpers/TextInput";
+import { TextArea } from "@/components/helpers/TextArea";
 import { Label } from "@/components/ui/label";
 import Toast from "@/components/Toast";
 import axios from "axios";

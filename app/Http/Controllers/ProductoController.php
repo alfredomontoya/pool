@@ -47,6 +47,17 @@ class ProductoController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        // Obtener el producto con relaciones necesarias
+        $producto = Producto::with(['categoria', 'imagenes', 'precios', 'precioActivo'])->findOrFail($id);
+
+        // Retornar a la vista de Inertia
+        return Inertia::render('Productos/ProductoShow', [
+            'producto' => $producto,
+        ]);
+    }
+
     public function create(){
         $categorias = \App\Models\Categoria::all();
         return Inertia::render('Productos/ProductoCreateOrUpdated', [
