@@ -265,6 +265,9 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
         <ProductoImagenesManager
             productoId={producto?.id || initialData.id}
             imagenesGuardadas={producto?.imagenes || []}
+            onUpdated={ (message) => {
+              setToastMessage(message)
+            }}
             />
 
         {/* Toast */}

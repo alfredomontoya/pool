@@ -14,7 +14,7 @@ const formatoFecha = (fecha: string | null | undefined) => {
   return new Date(fecha).toLocaleDateString();
 };
 
-const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) => {
+const ProductoResumenModal: React.FC<DetailModalProps> = ({ producto, onClose }) => {
   const [showZoom, setShowZoom] = useState(false);
   const [zoomSrc, setZoomSrc] = useState("");
 
@@ -62,7 +62,7 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
 
           <h2 className="text-xl font-semibold mb-2">Detalle del Producto</h2>
           <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-            Información completa del producto seleccionado.
+            Información Resumida del producto seleccionado.
           </p>
 
           <div className="space-y-4">
@@ -82,67 +82,6 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
             </div>
             <div><span className="font-semibold">Creado:</span> {formatoFecha(producto.created_at)}</div>
             <div><span className="font-semibold">Actualizado:</span> {formatoFecha(producto.updated_at)}</div>
-
-            {/* Galería de imágenes */}
-            {producto.imagenes && producto.imagenes.length > 0 && (
-              <div>
-                <span className="font-semibold">Imágenes:</span>
-                <div className="grid grid-cols-3 gap-3 mt-2">
-                  {producto.imagenes.map((img) => {
-                    const src = img.imagen.startsWith("http") ? img.imagen : `/storage/${img.imagen}`;
-                    return (
-                      <div key={img.id} className="relative">
-                        <img
-                          src={src}
-                          alt={producto.nombre}
-                          className={`w-full h-28 object-cover rounded cursor-pointer hover:opacity-90 transition ${
-                            img.es_principal ? "border-4 border-blue-500" : "border"
-                          }`}
-                          onClick={() => {
-                            setZoomSrc(src);
-                            setShowZoom(true);
-                          }}
-                        />
-                        {img.es_principal && (
-                          <span className="absolute top-1 left-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded">
-                            Principal
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Historial de precios */}
-            {producto.precios && producto.precios.length > 0 && (
-              <div>
-                <span className="font-semibold">Historial de precios:</span>
-                <table className="w-full mt-2 border text-sm">
-                  <thead>
-                    <tr className="bg-gray-100 dark:bg-gray-700">
-                        <th className="px-2 py-1 text-left">Precio Venta</th>
-                      <th className="px-2 py-1 text-left">Precio Compra</th>
-                      <th className="px-2 py-1 text-left">Activo</th>
-                      <th className="px-2 py-1 text-left">Inicio</th>
-                      <th className="px-2 py-1 text-left">Fin</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {producto.precios.map((p) => (
-                      <tr key={p.id} className="border-t">
-                        <td className="px-2 py-1">{p.precio_venta}</td>
-                        <td className="px-2 py-1">{p.precio_compra}</td>
-                        <td className="px-2 py-1">{p.activo ? "Sí" : "No"}</td>
-                        <td className="px-2 py-1">{formatoFecha(p.fecha_inicio)}</td>
-                        <td className="px-2 py-1">{formatoFecha(p.fecha_fin)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
           </div>
 
           {/* Botón cerrar abajo */}
@@ -158,4 +97,4 @@ const ProductoDetailModal: React.FC<DetailModalProps> = ({ producto, onClose }) 
   );
 };
 
-export default ProductoDetailModal;
+export default ProductoResumenModal;

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProductoImagenController;
 use App\Http\Middleware\SetUserId;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -21,7 +22,12 @@ Route::middleware(['auth', SetUserId::class])->group(function () {
     Route::resource('clientes', ClienteController::class);
     Route::resource('categorias', CategoriaController::class);
     Route::get('productos/createOrUpdate/{id}', [ProductoController::class, 'createOrUpdate'])->name('productos.createOrUpdate');
+    Route::post('productos/{id}/storeImages', [ProductoController::class, 'storeImages'])->name('productos.storeImages');
     Route::resource('productos', ProductoController::class);
+
+    Route::patch('productoimagenes/{id}/setPrincipal', [ProductoImagenController::class, 'setPrincipal'])->name('productoimagenes.setPrincipal');
+    Route::resource('productoimagenes', ProductoImagenController::class);
+
 });
 
 require __DIR__.'/settings.php';

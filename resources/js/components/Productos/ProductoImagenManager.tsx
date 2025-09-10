@@ -4,53 +4,60 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { ProductoImagen } from "@/interfaces/Productos.Interface";
 
-
-
 interface Props {
   productoId: number | null; // ID del producto
   imagenesGuardadas: ProductoImagen[]; // imágenes que vienen del backend
+  onUpdated?: (mensaje: string) => void; // callback opcional
 }
 
-const ProductoImagenesManager: React.FC<Props> = ({ productoId, imagenesGuardadas }) => {
-    console.log('productoId:', productoId);
-    console.log('imagenesGuardadas:', imagenesGuardadas);
+const ProductoImagenesManager: React.FC<Props> = ({ productoId, imagenesGuardadas, onUpdated }) => {
   const [imagenes, setImagenes] = useState<ProductoImagen[]>(imagenesGuardadas);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   useEffect(() => {
     setImagenes(imagenesGuardadas);
   }, [imagenesGuardadas]);
 
-  // Subir nuevas imágenes
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Manejar selección de archivos y generar previews
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
+    const files = Array.from(e.target.files);
+    setSelectedFiles(files);
+
+    const urls = files.map((file) => URL.createObjectURL(file));
+    setPreviews(urls);
+  };
+
+  // Subir imágenes seleccionadas
+  const uploadPreviews = async () => {
+    if (!productoId || selectedFiles.length === 0) return;
 
     const formData = new FormData();
-    Array.from(e.target.files).forEach((file) => {
-      formData.append("imagenes[]", file);
-    });
+    selectedFiles.forEach((file) => formData.append("imagenes[]", file));
 
     try {
-      const { data } = await axios.post(
-        `/api/productos/${productoId}/imagenes`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const { data } = await axios.post(`/productos/${productoId}/storeImages`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       setImagenes((prev) => [...prev, ...data.imagenes]);
-    } catch (error) {
-      console.error("Error al subir imágenes:", error);
+      setPreviews([]);
+      setSelectedFiles([]);
+      onUpdated?.("Imágenes guardadas correctamente");
+    } catch (error: any) {
+      console.error("Error al subir imágenes:", error.response?.data || error.message);
+      onUpdated?.("Error al subir imágenes");
     }
   };
 
   // Eliminar imagen
   const handleRemove = async (imagenId?: number) => {
     if (!imagenId) return;
-
     try {
-      await axios.delete(`/api/imagenes/${imagenId}`);
+      await axios.delete(`/productoimagenes/${imagenId}`);
       setImagenes((prev) => prev.filter((img) => img.id !== imagenId));
+      onUpdated?.("Imagen eliminada");
     } catch (error) {
       console.error("Error al eliminar imagen:", error);
     }
@@ -59,16 +66,12 @@ const ProductoImagenesManager: React.FC<Props> = ({ productoId, imagenesGuardada
   // Establecer como principal
   const setPrincipal = async (imagenId?: number) => {
     if (!imagenId) return;
-
     try {
-      await axios.patch(`/api/imagenes/${imagenId}/principal`);
-
+      await axios.patch(`/productoimagenes/${imagenId}/setPrincipal`);
       setImagenes((prev) =>
-        prev.map((img) => ({
-          ...img,
-          principal: img.id === imagenId,
-        }))
+        prev.map((img) => ({ ...img, es_principal: img.id === imagenId }))
       );
+      onUpdated?.("Imagen principal actualizada");
     } catch (error) {
       console.error("Error al establecer imagen principal:", error);
     }
@@ -76,22 +79,40 @@ const ProductoImagenesManager: React.FC<Props> = ({ productoId, imagenesGuardada
 
   return (
     <div>
-      {/* Botón subir imágenes */}
+      <h2 className="text-xl font-semibold mb-2">Imágenes del producto</h2>
+      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+        Configurar imágenes del producto
+      </p>
+
+      {/* Input y previews */}
       <div className="mb-4">
         <label className="flex items-center gap-2 cursor-pointer">
           <Upload className="w-5 h-5 text-gray-600" />
-          <span className="text-sm text-gray-700">Subir imágenes</span>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={handleUpload}
-          />
+          <span className="text-sm text-gray-700">Seleccionar imágenes</span>
+          <input type="file" multiple accept="image/*" className="hidden" onChange={handleFileChange} />
         </label>
+
+        {/* Mostrar previews */}
+        {previews.length > 0 && (
+          <div className="mt-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {previews.map((src, idx) => (
+                <img
+                  key={idx}
+                  src={src}
+                  alt={`preview-${idx}`}
+                  className="w-full h-32 object-cover rounded-lg border border-gray-300"
+                />
+              ))}
+            </div>
+            <Button className="mt-2" onClick={uploadPreviews}>
+              Guardar Imágenes
+            </Button>
+          </div>
+        )}
       </div>
 
-      {/* Grid de imágenes */}
+      {/* Grid de imágenes existentes */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {imagenes.map((img) => (
           <div key={img.id ?? img.imagen} className="relative group">

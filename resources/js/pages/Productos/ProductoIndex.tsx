@@ -2,15 +2,12 @@ import React, { useState } from "react";
 import { usePage, router, Link } from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
 import ProductoItemsTable from "@/components/Productos/ProductoItemsTable";
-import ProductoEditModal from "@/components/Productos/ProductoEditModal";
-import ProductoDetailModal from "@/components/Productos/ProductoDetailModal";
+import ProductoResumenModal from "@/components/Productos/ProductoResumenModal";
 import ConfirmModal from "@/components/ConfirmModal";
 import Toast from "@/components/Toast";
 import ProductoSearch from "@/components/Productos/ProductoSearch";
 import { Producto, PaginatedProductos } from "@/interfaces/Productos.Interface";
 import { Categoria } from "@/interfaces/Categorias.Interface";
-import { Button } from "@/components/ui/button";
-import ProductoImagenes from "@/components/Productos/ProductoImagenes";
 import { BreadcrumbItem } from "@/types";
 import FloatingCreateButton from "@/components/Productos/FloatingCreateButton";
 
@@ -75,18 +72,8 @@ const ProductoIndex: React.FC<Props> = ({ productos, categorias, filters }) => {
           }}
         />
 
-        {editProducto && (
-            <ProductoEditModal
-                show={true}
-                categorias={categorias}  // asegúrate de tenerlas en el estado o props
-                producto={editProducto}
-                onClose={() => setEditProducto(null)}
-                onSaved={(msg) => handleSaved(msg)}
-            />
-            )}
-
         {detailProducto && (
-          <ProductoDetailModal
+          <ProductoResumenModal
             producto={detailProducto}
             onClose={() => setDetailProducto(null)}
           />

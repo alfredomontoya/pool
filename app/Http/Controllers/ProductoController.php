@@ -88,6 +88,7 @@ class ProductoController extends Controller
         ]);
     }
 
+
     // Crear producto
     public function store(Request $request)
     {
@@ -177,6 +178,37 @@ class ProductoController extends Controller
         ]);
     }
 
+    public function storeImages(Request $request, $productoId)
+    {
+        $request->validate([
+            'imagenes.*' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $producto = Producto::findOrFail($productoId);
+
+        $imagenesGuardadas = [];
+
+        if ($request->hasFile('imagenes')) {
+            foreach ($request->file('imagenes') as $imagen) {
+                // Guardar la imagen en storage/app/public/productos
+                $path = $imagen->store('productos', 'public');
+
+                $nuevaImagen = ProductoImagen::create([
+                    'producto_id'  => $producto->id,
+                    'imagen'       => $path,
+                    'es_principal' => false,
+                    'user_id'      => Auth::id(), // 👈 asignar usuario actual
+                ]);
+
+                $imagenesGuardadas[] = $nuevaImagen;
+            }
+        }
+
+        return response()->json([
+            'message'  => 'Imágenes guardadas correctamente',
+            'imagenes' => $imagenesGuardadas,
+        ]);
+    }
     /**
      * Guarda un nuevo precio solo si hay cambios en precio_venta o precio_compra.
      */

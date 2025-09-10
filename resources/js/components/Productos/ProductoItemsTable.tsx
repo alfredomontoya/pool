@@ -87,6 +87,16 @@ const ProductoItemsTable: React.FC<Props> = ({ productos, filters, onEdit, onDel
                 <td className="px-4 py-2 space-x-2">
                   <Button
                     onClick={(e) => {
+                      e.stopPropagation();
+                      router.visit(`/productos/${prod.id}`)
+                    }}
+                    variant={"warning"}
+                    className="px-2 py-1"
+                  >
+                    Detail
+                  </Button>
+                  <Button
+                    onClick={(e) => {
                         e.stopPropagation();
                         router.get(`/productos/${prod.id}/edit`);
                     }}
