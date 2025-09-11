@@ -25,7 +25,10 @@ class DatabaseSeeder extends Seeder
             'categorias',
             'productos',
             'producto_imagens',
-            'producto_precios'
+            'producto_precios',
+            'tipo_pagos',
+            'ventas',
+            'detalle_ventas',
         ]);
 
         User::factory()->create([
@@ -40,6 +43,8 @@ class DatabaseSeeder extends Seeder
             ProductoSeeder::class,
             ProductoImagenSeeder::class,
             ProductoPrecioSeeder::class,
+            TipoPagoSeeder::class,
+            VentaSeeder::class,
         ]);
     }
 
