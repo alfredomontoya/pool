@@ -15,6 +15,7 @@ import axios from "axios";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import FloatingCreateButton from "@/components/Productos/FloatingCreateButton";
 import ProductoImagenesManager from "@/components/Productos/ProductoImagenManager";
+import ProductoPrecioManager from "@/components/Productos/ProductoPrecioManager";
 
 interface Props {
   producto: Producto | null;
@@ -267,6 +268,13 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
               setToastMessage(message)
             }}
             />
+        <ProductoPrecioManager
+            productoId={producto?.id || initialData.id}
+            preciosGuardados={producto?.precios || []}
+            onUpdated={ (message) => {
+              setToastMessage(message)
+            }}
+        />
 
         {/* Toast */}
         {toastMessage && (

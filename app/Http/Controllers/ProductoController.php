@@ -67,7 +67,7 @@ class ProductoController extends Controller
 
     public function edit($id){
         $categorias = \App\Models\Categoria::all();
-        $producto = Producto::with(['categoria', 'precioActivo', 'imagenes'])->find($id);
+        $producto = Producto::with(['categoria', 'precioActivo', 'imagenes', 'precios'])->find($id);
         return Inertia::render('Productos/ProductoCreateOrUpdated', [
             'categorias' => $categorias, // <-- agregado
             'producto' => $producto
