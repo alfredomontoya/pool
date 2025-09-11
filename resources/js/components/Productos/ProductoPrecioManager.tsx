@@ -12,8 +12,18 @@ interface Props {
 }
 
 const ProductoPrecioManager: React.FC<Props> = ({ productoId, preciosGuardados, onUpdated }) => {
+    const today = new Date().toISOString().split("T")[0]
+
   const [precios, setPrecios] = useState<ProductoPrecio[]>(preciosGuardados);
-  const [nuevoPrecio, setNuevoPrecio] = useState<Partial<ProductoPrecio>>({});
+  const [nuevoPrecio, setNuevoPrecio] = useState<Partial<ProductoPrecio>>({
+        producto_id: productoId ?? undefined,
+        precio_venta: 0,
+        precio_compra: 0,
+        activo: true,
+        fecha_inicio: today, // ✅ por defecto la fecha actual
+        fecha_fin: null,
+  });
+
 
   useEffect(() => {
     setPrecios(preciosGuardados);
@@ -29,13 +39,21 @@ const ProductoPrecioManager: React.FC<Props> = ({ productoId, preciosGuardados, 
     if (!productoId) return;
 
     try {
-      const { data } = await axios.post(`/productoprecios/`, {
+      const { data } = await axios.post(`/producto-precios`, {
         ...nuevoPrecio,
         producto_id: productoId,
       });
 
-      setPrecios((prev) => [...prev, data.precio]);
-      setNuevoPrecio({});
+      console.log("Respuesta al agregar precio:", data);
+
+      setPrecios(data.productoPrecios);
+      setNuevoPrecio({
+        precio_venta: 0,
+        precio_compra: 0,
+        activo: true,
+        fecha_inicio: today,
+        fecha_fin: null,
+      });
       onUpdated?.("Precio agregado correctamente");
     } catch (error: any) {
       console.error("Error al agregar precio:", error.response?.data || error.message);
@@ -68,21 +86,21 @@ const ProductoPrecioManager: React.FC<Props> = ({ productoId, preciosGuardados, 
         <input
           type="number"
           placeholder="Precio venta"
-          value={nuevoPrecio.precio_venta ?? ""}
+          value={nuevoPrecio.precio_venta}
           onChange={(e) => handleChange("precio_venta", parseFloat(e.target.value))}
           className="border p-2 rounded"
         />
         <input
           type="number"
           placeholder="Precio compra"
-          value={nuevoPrecio.precio_compra ?? ""}
+          value={nuevoPrecio.precio_compra}
           onChange={(e) => handleChange("precio_compra", parseFloat(e.target.value))}
           className="border p-2 rounded"
         />
         <input
           type="date"
           placeholder="Fecha inicio"
-          value={nuevoPrecio.fecha_inicio ?? ""}
+          value={nuevoPrecio.fecha_inicio ?? today}
           onChange={(e) => handleChange("fecha_inicio", e.target.value)}
           className="border p-2 rounded"
         />
