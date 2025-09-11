@@ -53,21 +53,30 @@ const ProductoImagenesManager: React.FC<Props> = ({ productoId, imagenesGuardada
 
   // Eliminar imagen
   const handleRemove = async (imagenId?: number) => {
-    if (!imagenId) return;
-    try {
-      await axios.delete(`/productoimagenes/${imagenId}`);
-      setImagenes((prev) => prev.filter((img) => img.id !== imagenId));
-      onUpdated?.("Imagen eliminada");
-    } catch (error) {
-      console.error("Error al eliminar imagen:", error);
+  if (!imagenId) return;
+  try {
+    const { data } = await axios.delete(`/productoimagenes/${imagenId}`);
+
+    if (data.productoImagenes) {
+      setImagenes(data.productoImagenes); // Reemplaza el estado con la lista actualizada
     }
-  };
+
+    onUpdated?.(data.message || "Imagen eliminada");
+  } catch (error) {
+    console.error("Error al eliminar imagen:", error);
+  }
+};
+
 
   // Establecer como principal
   const setPrincipal = async (imagenId?: number) => {
+    console.log('esPrincipal')
+    console.log(imagenId)
     if (!imagenId) return;
     try {
-      await axios.patch(`/productoimagenes/${imagenId}/setPrincipal`);
+      const result = await axios.patch(`/productoimagenes/${imagenId}/setPrincipal`);
+      console.log('result')
+      console.log(result)
       setImagenes((prev) =>
         prev.map((img) => ({ ...img, es_principal: img.id === imagenId }))
       );

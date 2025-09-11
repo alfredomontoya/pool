@@ -25,8 +25,6 @@ interface Props {
 const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
     // Formulario con Inertia useForm
 
-    console.log('producto en form');
-    console.log(producto);
   const { data, setData, errors } = useForm<ProductoCrear & Record<string, any>>({
   id: producto?.id || null,
   nombre: producto?.nombre || "",
