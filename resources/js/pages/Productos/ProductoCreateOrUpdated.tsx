@@ -261,6 +261,8 @@ const ProductoCreate = ({ categorias, onSaved, producto }: Props) => {
           </Button>
         </div>
 
+        <div className="mb-6"></div>
+
         <ProductoImagenesManager
             productoId={producto?.id || initialData.id}
             imagenesGuardadas={producto?.imagenes || []}

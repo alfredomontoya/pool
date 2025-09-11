@@ -87,7 +87,7 @@ const ProductoImagenesManager: React.FC<Props> = ({ productoId, imagenesGuardada
   };
 
   return (
-    <div>
+    <div className="mb-6">
       <h2 className="text-xl font-semibold mb-2">Imágenes del producto</h2>
       <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
         Configurar imágenes del producto
@@ -104,13 +104,13 @@ const ProductoImagenesManager: React.FC<Props> = ({ productoId, imagenesGuardada
         {/* Mostrar previews */}
         {previews.length > 0 && (
           <div className="mt-4">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
               {previews.map((src, idx) => (
                 <img
                   key={idx}
                   src={src}
                   alt={`preview-${idx}`}
-                  className="w-full h-32 object-cover rounded-lg border border-gray-300"
+                  className="w-full aspect-square rounded-xl overflow-hidden border border-gray-300 object-cover"
                 />
               ))}
             </div>
@@ -122,48 +122,54 @@ const ProductoImagenesManager: React.FC<Props> = ({ productoId, imagenesGuardada
       </div>
 
       {/* Grid de imágenes existentes */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
         {imagenes.map((img) => (
-          <div key={img.id ?? img.imagen} className="relative group">
-            <img
-              src={img.imagen.startsWith("http") ? img.imagen : `/storage/${img.imagen}`}
-              alt={`imagen-${img.id}`}
-              className={`w-full h-32 object-cover rounded-xl border ${
+            <div key={img.id ?? img.imagen} className="relative group">
+            {/* Contenedor cuadrado */}
+            <div
+                className={`w-full aspect-square rounded-xl overflow-hidden border ${
                 img.es_principal ? "border-blue-500" : "border-gray-300"
-              }`}
-            />
+                }`}
+            >
+                <img
+                src={img.imagen.startsWith("http") ? img.imagen : `/storage/${img.imagen}`}
+                alt={`imagen-${img.id}`}
+                className="w-full h-full object-cover"
+                />
+            </div>
 
             {/* Botones flotantes */}
             <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition">
-              <button
-                onClick={() => handleRemove(img.id)}
-                className="p-1 bg-red-500 text-white rounded-full shadow hover:bg-red-600"
-                title="Eliminar"
-              >
+                <button
+                    onClick={() => handleRemove(img.id)}
+                    className="p-1 bg-red-500 text-white rounded-full shadow hover:bg-red-600"
+                    title="Eliminar"
+                >
                 <X className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setPrincipal(img.id)}
-                className={`p-1 rounded-full shadow ${
-                  img.es_principal
-                    ? "bg-yellow-400 text-black"
-                    : "bg-gray-700 text-white hover:bg-yellow-400 hover:text-black"
-                }`}
-                title="Establecer como principal"
-              >
+                </button>
+                <button
+                    onClick={() => setPrincipal(img.id)}
+                    className={`p-1 rounded-full shadow ${
+                        img.es_principal
+                        ? "bg-yellow-400 text-black"
+                        : "bg-gray-700 text-white hover:bg-yellow-400 hover:text-black"
+                    }`}
+                    title="Establecer como principal"
+                >
                 <Star className="w-4 h-4" />
-              </button>
+                </button>
             </div>
 
             {/* Etiqueta principal */}
-            {img.es_principal && (
-              <span className="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full shadow">
-                Principal
-              </span>
+            {!!img.es_principal && (
+                <span className="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full shadow">
+                    Principal
+                </span>
             )}
-          </div>
+            </div>
         ))}
-      </div>
+        </div>
+
     </div>
   );
 };
