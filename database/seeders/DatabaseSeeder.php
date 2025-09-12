@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             ProductoPrecioSeeder::class,
             TipoPagoSeeder::class,
             VentaSeeder::class,
+            DetalleVentaSeeder::class,
         ]);
     }
 

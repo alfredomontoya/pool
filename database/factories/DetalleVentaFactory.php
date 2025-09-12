@@ -15,7 +15,7 @@ class DetalleVentaFactory extends Factory
     public function definition(): array
     {
         $producto = Producto::all()->random();
-        $precio = Producto::PrecioActivo();
+        $precio = $producto->precioActivo;
 
         $cantidad = $this->faker->numberBetween(1, 5);
         $precioUnitario = $precio->precio_venta;

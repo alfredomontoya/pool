@@ -1,1 +1,1 @@
-slect * from users;
+SELECT * from ventas;
