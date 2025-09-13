@@ -15,7 +15,7 @@ class DetalleVentaFactory extends Factory
     public function definition(): array
     {
         $producto = Producto::all()->random();
-        $precio = $producto->precioActivo;
+        $precio = $producto->precioActivo; // se obtiene de la relacion con producto precio
 
         $cantidad = $this->faker->numberBetween(1, 5);
         $precioUnitario = $precio->precio_venta;
@@ -24,7 +24,7 @@ class DetalleVentaFactory extends Factory
         return [
             'venta_id' => Venta::all('id')->random()->id ?? Venta::factory(),
             'producto_id' => $producto->id,
-            'precio_producto_id' => $precio->id,
+            'producto_precio_id' => $precio->id,
             'cantidad' => $cantidad,
             'precio_unitario' => $precioUnitario,
             'subtotal' => $subtotal,

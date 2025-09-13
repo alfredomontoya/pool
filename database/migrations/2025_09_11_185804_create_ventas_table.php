@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->decimal('efectivo', 12, 2)->nullable();
             $table->decimal('cambio', 12, 2)->nullable();
             $table->enum('estado', ['pendiente', 'cancelado'])->default('pendiente');
-            $table->boolean('credito')->default(false);
             $table->timestamps();
         });
     }

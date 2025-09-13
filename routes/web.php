@@ -5,6 +5,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProductoImagenController;
 use App\Http\Controllers\ProductoPrecioController;
+use App\Http\Controllers\VentaController;
 use App\Http\Middleware\SetUserId;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,6 +31,8 @@ Route::middleware(['auth', SetUserId::class])->group(function () {
     Route::resource('productoimagenes', ProductoImagenController::class);
 
     Route::post('producto-precios', [ProductoPrecioController::class, 'store'])->name('producto-precios.store');
+
+    Route::resource('ventas', VentaController::class);
 
 });
 
