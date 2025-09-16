@@ -1,46 +1,55 @@
-import { useState, useEffect } from "react"
-import { Venta, TipoPago } from "@/types"
-import { Cliente } from "@/interfaces/Clientes.Interface"
+import { useState, useEffect } from "react";
+import { Cliente } from "@/interfaces/Clientes.Interface";
+import { DetalleVenta, TipoPago, Venta } from "@/interfaces/Venta.Interface";
+import DetalleVentaManager from "./DetalleVentaManager";
+import { Producto } from "@/interfaces/Productos.Interface";
 
 interface Props {
-  venta?: Venta
-  clientes: Cliente[]
-  tiposPago: TipoPago[]
-  onSubmit: (data: Partial<Venta>) => void
+  venta?: Venta;
+  clientes: Cliente[];
+  tiposPago: TipoPago[];
+  productos: Producto[]; // 👈 añadimos lista de productos desde el backend
+  onSubmit: (data: Partial<Venta>) => void;
 }
 
-export default function VentaForm({ venta, clientes, tiposPago, onSubmit }: Props) {
-  const [tipoPagoId, setTipoPagoId] = useState<number>(venta?.tipo_pago_id ?? tiposPago[0]?.id)
-  const [clienteQuery, setClienteQuery] = useState<string>("")
+export default function VentaForm({ venta, clientes, tiposPago, productos, onSubmit }: Props) {
+  const [tipoPagoId, setTipoPagoId] = useState<number>(venta?.tipo_pago_id ?? tiposPago[0]?.id);
+  const [clienteQuery, setClienteQuery] = useState<string>("");
   const [clienteSeleccionado, setClienteSeleccionado] = useState<Cliente | null>(
-    clientes.find(c => c.id === venta?.cliente_id) ?? null
-  )
-  const [total, setTotal] = useState<number>(venta?.total ?? 0)
-  const [efectivo, setEfectivo] = useState<number>(venta?.efectivo ?? 0)
-  const [cambio, setCambio] = useState<number>(venta?.cambio ?? 0)
-  const [estado, setEstado] = useState<string>(venta?.estado ?? "pendiente")
+    clientes.find((c) => c.id === venta?.cliente_id) ?? null
+  );
+  const [total, setTotal] = useState<number>(venta?.total ?? 0);
+  const [efectivo, setEfectivo] = useState<number>(venta?.efectivo ?? 0);
+  const [cambio, setCambio] = useState<number>(venta?.cambio ?? 0);
+  const [estado, setEstado] = useState<string>(venta?.estado ?? "pendiente");
 
-  // calcular cambio automáticamente
+  const [detalles, setDetalles] = useState<DetalleVenta[]>([]);
+
   useEffect(() => {
-    setCambio(Math.max(0, efectivo - total))
-  }, [total, efectivo])
+    setCambio(Math.max(0, efectivo - total));
+  }, [total, efectivo]);
 
-  // filtrar clientes al escribir
-  const clientesFiltrados = clientes.filter(c =>
+  useEffect(() => {
+    setTotal(detalles.reduce((acc, d) => acc + d.subtotal, 0));
+  }, [detalles]);
+
+  const clientesFiltrados = clientes.filter((c) =>
     c.nombre_razon_social.toLowerCase().includes(clienteQuery.toLowerCase())
-  )
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!clienteSeleccionado) return alert("Debe seleccionar un cliente")
+    e.preventDefault();
+    if (!clienteSeleccionado) return alert("Debe seleccionar un cliente");
+
     onSubmit({
       tipo_pago_id: tipoPagoId,
       cliente_id: clienteSeleccionado.id,
       total,
       efectivo,
       cambio,
-    })
-  }
+      detalles, // 👈 enviamos los detalles
+    });
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -48,7 +57,7 @@ export default function VentaForm({ venta, clientes, tiposPago, onSubmit }: Prop
       <div>
         <label className="block font-semibold mb-2">Tipo de Pago</label>
         <div className="flex gap-4">
-          {tiposPago.map(tp => (
+          {tiposPago.map((tp) => (
             <label key={tp.id} className="flex items-center gap-2">
               <input
                 type="radio"
@@ -68,20 +77,20 @@ export default function VentaForm({ venta, clientes, tiposPago, onSubmit }: Prop
         <input
           type="text"
           value={clienteQuery}
-          onChange={e => setClienteQuery(e.target.value)}
+          onChange={(e) => setClienteQuery(e.target.value)}
           placeholder="Buscar cliente..."
           className="border rounded p-2 w-full"
         />
         {clienteQuery && (
-          <ul className="border rounded mt-2 max-h-40 overflow-y-auto bg-primary/50 shadow">
-            {clientesFiltrados.map(c => (
+          <ul className="border rounded mt-2 max-h-40 overflow-y-auto bg-white shadow">
+            {clientesFiltrados.map((c) => (
               <li
                 key={c.id}
                 onClick={() => {
-                  setClienteSeleccionado(c)
-                  setClienteQuery("")
+                  setClienteSeleccionado(c);
+                  setClienteQuery("");
                 }}
-                className="p-2 hover:bg-primary/10 cursor-pointer"
+                className="p-2 hover:bg-gray-100 cursor-pointer"
               >
                 {c.nombre_razon_social}
               </li>
@@ -98,29 +107,17 @@ export default function VentaForm({ venta, clientes, tiposPago, onSubmit }: Prop
         )}
       </div>
 
-      {/* Total */}
-      <div>
-        <label className="block font-semibold mb-2">Total</label>
-        <input
-          type="number"
-          value={total}
-          onChange={e => setTotal(Number(e.target.value))}
-          className="border rounded p-2 w-full"
-        />
-      </div>
-
-      {/* Efectivo */}
+      {/* Totales */}
       <div>
         <label className="block font-semibold mb-2">Efectivo</label>
         <input
           type="number"
           value={efectivo}
-          onChange={e => setEfectivo(Number(e.target.value))}
+          onChange={(e) => setEfectivo(Number(e.target.value))}
           className="border rounded p-2 w-full"
         />
       </div>
 
-      {/* Cambio */}
       <div>
         <label className="block font-semibold mb-2">Cambio</label>
         <input
@@ -131,6 +128,9 @@ export default function VentaForm({ venta, clientes, tiposPago, onSubmit }: Prop
         />
       </div>
 
+      {/* Componente de detalle */}
+      <DetalleVentaManager productos={productos} onChange={setDetalles} />
+
       {/* Botón Guardar */}
       <button
         type="submit"
@@ -139,5 +139,5 @@ export default function VentaForm({ venta, clientes, tiposPago, onSubmit }: Prop
         Guardar Venta
       </button>
     </form>
-  )
+  );
 }

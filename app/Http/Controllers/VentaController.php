@@ -14,7 +14,7 @@ class VentaController extends Controller
 {
     public function index(Request $request)
     {
-        $ventas = Venta::with(['user', 'tipoPago'])
+        $ventas = Venta::with(['user', 'tipoPago', 'cliente'])
             ->when($request->search, function ($query, $search) {
                 $query->where('id', 'like', "%$search%")
                       ->orWhereHas('user', fn($q) => $q->where('name', 'like', "%$search%"));

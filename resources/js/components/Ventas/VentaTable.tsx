@@ -1,7 +1,7 @@
 // resources/js/Components/VentaTable.tsx
 import { Link } from '@inertiajs/react'
-import { Paginated, Venta } from '@/types'
 import Pagination from '../Pagination'
+import { Paginated, Venta } from '@/interfaces/Venta.Interface'
 
 interface Props {
   ventas: Paginated<Venta>
@@ -24,7 +24,7 @@ export default function VentaTable({ ventas }: Props) {
           {ventas.data.map((venta) => (
             <tr key={venta.id} className="border-t">
               <td className="p-2">{venta.id}</td>
-              <td className="p-2">{venta.cliente_id ?? '-'}</td>
+              <td className="p-2">{venta.cliente?.nombre_razon_social ?? '-'}</td>
               <td className="p-2">{venta.total}</td>
               <td className="p-2">{venta.estado}</td>
               <td className="p-2 flex gap-2">

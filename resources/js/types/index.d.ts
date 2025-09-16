@@ -61,37 +61,3 @@ declare module "@inertiajs/core" {
 }
 
 // src/types.d.ts
-// VENTAS
-export interface Venta {
-  id: number
-  user_id: number
-  tipo_pago_id: number
-  cliente_id?: number | null
-  total: number
-  efectivo?: number | null
-  cambio?: number | null
-  estado: 'pendiente' | 'completado' | 'anulado'
-  created_at?: string
-  updated_at?: string
-  user?: { id: number; name: string }
-  tipoPago?: { id: number; nombre: string }
-  detalles?: [] // luego lo defines mejor si quieres
-}
-
-export interface PaginationLink {
-  url: string | null
-  label: string
-  active: boolean
-}
-
-export interface Paginated<T> {
-  data: T[]
-  links: PaginationLink[]
-}
-
-// TIPOS DE PAGO
-export interface TipoPago {
-  id: number
-  nombre: string
-  activo: boolean
-}
