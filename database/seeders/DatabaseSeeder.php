@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             'tipo_pagos',
             'ventas',
             'detalle_ventas',
+            'movimientos'
         ]);
 
         User::factory()->create([
@@ -46,6 +47,7 @@ class DatabaseSeeder extends Seeder
             TipoPagoSeeder::class,
             VentaSeeder::class,
             DetalleVentaSeeder::class,
+            MovimientoSeeder::class,
         ]);
     }
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProductoImagenController;
 use App\Http\Controllers\ProductoPrecioController;
+use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\VentaController;
 use App\Http\Middleware\SetUserId;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,7 @@ Route::middleware(['auth', SetUserId::class])->group(function () {
     Route::post('producto-precios', [ProductoPrecioController::class, 'store'])->name('producto-precios.store');
 
     Route::resource('ventas', VentaController::class);
+    Route::resource('movimientos', MovimientoController::class);
 
 });
 
