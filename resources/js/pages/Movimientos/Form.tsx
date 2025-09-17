@@ -1,41 +1,73 @@
+import { Movimiento } from "@/interfaces/Movimientos.Interface";
 import { useForm } from "@inertiajs/react";
+import { useEffect } from "react";
 
-export default function Form({ movimiento }: any) {
+interface Props {
+  movimiento?: Movimiento | null;
+  tipo?: "ingreso" | "egreso"; // prop opcional para Create
+}
+
+export default function Form({ movimiento, tipo }: Props) {
   const today = new Date().toISOString().split("T")[0];
 
-  const { data, setData, post, put, processing, errors } = useForm(
-    movimiento || {
-      fecha: today,
-      nombre: "",
-      umedida: "", // 👈 nuevo
-      descripcion: "",
-      cantidad: 1,
-      precio: 0,
-      tipo: "ingreso",
-    }
-  );
+  const { data, setData, post, put, processing, errors } = useForm({
+    nro: movimiento?.nro ?? 0,
+    tipo: movimiento?.tipo ?? tipo ?? "ingreso",
+    nombre: movimiento?.nombre ?? "",
+    descripcion: movimiento?.descripcion ?? "",
+    precio: movimiento?.precio ?? 0,
+    cantidad: movimiento?.cantidad ?? 1,
+    umedida: movimiento?.umedida ?? "unidad",
+    fecha: movimiento?.fecha ?? today,
+    total: movimiento?.total ?? 0, // total inicial
+  });
 
-  const handleSubmit = (e: any) => {
+  // Calcular total al cargar o al cambiar precio/cantidad
+  useEffect(() => {
+    const total = Number((data.precio * data.cantidad).toFixed(2));
+    if (total !== data.total) {
+      setData("total", total);
+    }
+  }, [data.precio, data.cantidad]);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    movimiento ? put(`/movimientos/${movimiento.id}`) : post("/movimientos");
+    if (movimiento) {
+      put(`/movimientos/${movimiento.id}`);
+    } else {
+      post("/movimientos");
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block font-semibold mb-1">Fecha</label>
+        {movimiento && (
+          <div>
+        <label className="block font-semibold mb-1">Nro</label>
         <input
-          type="date"
-          value={data.fecha}
-          onChange={e => setData("fecha", e.target.value)}
-          className="border p-2 w-full"
+          type="text"
+          value={data.nro }
+          className="border p-2 w-full cursor-not-allowed"
+          disabled
         />
-        {errors.fecha && <p className="text-red-500 text-sm">{errors.fecha}</p>}
+      </div>
+        )}
+      {/* Tipo (no editable) */}
+      <div>
+        <label className="block font-semibold mb-1">Tipo</label>
+        <input
+          type="text"
+          value={data.tipo === "ingreso" ? "Ingreso" : "Egreso"}
+          className="border p-2 w-full cursor-not-allowed"
+          disabled
+        />
       </div>
 
+      {/* Nombre */}
       <div>
         <label className="block font-semibold mb-1">Nombre</label>
         <input
+          type="text"
           value={data.nombre}
           onChange={e => setData("nombre", e.target.value)}
           placeholder="Nombre"
@@ -44,8 +76,7 @@ export default function Form({ movimiento }: any) {
         {errors.nombre && <p className="text-red-500 text-sm">{errors.nombre}</p>}
       </div>
 
-      
-
+      {/* Descripción */}
       <div>
         <label className="block font-semibold mb-1">Descripción</label>
         <textarea
@@ -57,51 +88,65 @@ export default function Form({ movimiento }: any) {
         {errors.descripcion && <p className="text-red-500 text-sm">{errors.descripcion}</p>}
       </div>
 
+      {/* Precio, Cantidad y Unidad de Medida */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label className="block font-semibold mb-1">Precio</label>
+          <input
+            type="number"
+            step="0.01"
+            value={data.precio}
+            onChange={e => setData("precio", Number(e.target.value))}
+            className="border p-2 w-full"
+          />
+          {errors.precio && <p className="text-red-500 text-sm">{errors.precio}</p>}
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1">Cantidad</label>
+          <input
+            type="number"
+            value={data.cantidad}
+            onChange={e => setData("cantidad", Number(e.target.value))}
+            className="border p-2 w-full"
+          />
+          {errors.cantidad && <p className="text-red-500 text-sm">{errors.cantidad}</p>}
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1">Unidad de Medida</label>
+          <input
+            type="text"
+            value={data.umedida}
+            onChange={e => setData("umedida", e.target.value)}
+            placeholder="Ej: kg, litros, unidades"
+            className="border p-2 w-full"
+          />
+          {errors.umedida && <p className="text-red-500 text-sm">{errors.umedida}</p>}
+        </div>
+      </div>
+
+      {/* Fecha */}
       <div>
-        <label className="block font-semibold mb-1">Cantidad</label>
+        <label className="block font-semibold mb-1">Fecha</label>
+        <input
+          type="date"
+          value={data.fecha}
+          onChange={e => setData("fecha", e.target.value)}
+          className="border p-2 w-full"
+        />
+        {errors.fecha && <p className="text-red-500 text-sm">{errors.fecha}</p>}
+      </div>
+
+      {/* Total calculado */}
+      <div>
+        <label className="block font-semibold mb-1">Total</label>
         <input
           type="number"
-          value={data.cantidad}
-          onChange={e => setData("cantidad", Number(e.target.value))}
-          className="border p-2 w-full"
+          value={data.total}
+          className="border p-2 w-full bg-gray/100 cursor-not-allowed"
+          disabled
         />
-        {errors.cantidad && <p className="text-red-500 text-sm">{errors.cantidad}</p>}
-      </div>
-
-      <div>
-        <label className="block font-semibold mb-1">Unidad de Medida</label>
-        <input
-          value={data.umedida}
-          onChange={e => setData("umedida", e.target.value)}
-          placeholder="Ej: kg, litros, unidades"
-          className="border p-2 w-full"
-        />
-        {errors.umedida && <p className="text-red-500 text-sm">{errors.umedida}</p>}
-      </div>
-
-      <div>
-        <label className="block font-semibold mb-1">Precio</label>
-        <input
-          type="number"
-          step="0.01"
-          value={data.precio}
-          onChange={e => setData("precio", Number(e.target.value))}
-          className="border p-2 w-full"
-        />
-        {errors.precio && <p className="text-red-500 text-sm">{errors.precio}</p>}
-      </div>
-
-      <div>
-        <label className="block font-semibold mb-1">Tipo</label>
-        <select
-          value={data.tipo}
-          onChange={e => setData("tipo", e.target.value)}
-          className="border p-2 w-full"
-        >
-          <option value="ingreso">Ingreso</option>
-          <option value="egreso">Egreso</option>
-        </select>
-        {errors.tipo && <p className="text-red-500 text-sm">{errors.tipo}</p>}
       </div>
 
       <button

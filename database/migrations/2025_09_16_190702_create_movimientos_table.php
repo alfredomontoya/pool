@@ -7,7 +7,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('movimientos', function (Blueprint $table) {
             $table->id();
-            $table->string('nro')->unique();
+            $table->unsignedBigInteger('nro')->unique();
             $table->date('fecha');
             $table->string('nombre');
             $table->text('descripcion')->nullable();

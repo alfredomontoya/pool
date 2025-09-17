@@ -10,7 +10,7 @@ class MovimientoController extends Controller
 {
     public function index()
     {
-        $movimientos = Movimiento::orderBy('fecha', 'desc')->paginate(10);
+        $movimientos = Movimiento::orderBy('nro', 'desc')->paginate(10);
 
         $totalIngresos = Movimiento::where('tipo', 'ingreso')->sum('total');
         $totalEgresos  = Movimiento::where('tipo', 'egreso')->sum('total');
@@ -25,9 +25,11 @@ class MovimientoController extends Controller
     }
 
 
-    public function create()
+    public function create(Request $request)
     {
-        return Inertia::render('Movimientos/Create');
+        return Inertia::render('Movimientos/Create', [
+            'tipo' => $request->query('tipo', 'ingreso')
+        ]);
     }
 
     public function store(Request $request)
