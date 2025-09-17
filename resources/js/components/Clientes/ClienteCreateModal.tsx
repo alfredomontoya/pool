@@ -23,7 +23,9 @@ const ClienteCreateModal: React.FC<ClienteCreateModalProps> = ({
   const [tipo, setTipo] = useState<"NATURAL" | "JURIDICO">("NATURAL");
   const [numeroDocumento, setNumeroDocumento] = useState("");
   const [nombreRazonSocial, setNombreRazonSocial] = useState("");
+  const [propietario, setPropietario] = useState("");
   const [direccion, setDireccion] = useState("");
+  const [ubicacion, setUbicacion] = useState("");
   const [telefono, setTelefono] = useState("");
   const [email, setEmail] = useState("");
   const [estado, setEstado] = useState<"activo" | "inactivo">("activo");
@@ -37,6 +39,8 @@ const ClienteCreateModal: React.FC<ClienteCreateModalProps> = ({
       numero_documento: numeroDocumento,
       nombre_razon_social: nombreRazonSocial,
       direccion,
+      propietario,
+      ubicacion,
       telefono,
       email,
       estado,
@@ -46,6 +50,11 @@ const ClienteCreateModal: React.FC<ClienteCreateModalProps> = ({
         onClose();
         onSaved(`Cliente '${nombreRazonSocial}' creado correctamente ✅`);
       },
+      onError: (errors) => {
+        console.error(errors);
+        alert("Error al crear el cliente. Ver consola para más detalles.");
+      }
+
     });
   };
 
@@ -54,7 +63,8 @@ const ClienteCreateModal: React.FC<ClienteCreateModalProps> = ({
       <div className="p-6 rounded w-96 bg-neutral-100 dark:bg-neutral-800">
         <h2 className="text-xl font-bold mb-4">Nuevo Cliente</h2>
         <form onSubmit={handleSubmit} className="space-y-2">
-          <Select value={tipoDocumento} onValueChange={(v: "CI" | "NIT") => setTipoDocumento(v)}>
+          <input type="hidden" name="tipo_documento" value={tipoDocumento} />
+          {/* <Select value={tipoDocumento} onValueChange={(v: "CI" | "NIT") => setTipoDocumento(v)}>
             <SelectTrigger>
               <SelectValue placeholder="Tipo Documento" />
             </SelectTrigger>
@@ -72,15 +82,15 @@ const ClienteCreateModal: React.FC<ClienteCreateModalProps> = ({
               <SelectItem value="NATURAL">NATURAL</SelectItem>
               <SelectItem value="JURIDICO">JURIDICO</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
 
-          <Input
+          {/* <Input
             type="text"
             placeholder="Número Documento"
             value={numeroDocumento}
             onChange={(e) => setNumeroDocumento(e.target.value)}
             required
-          />
+          /> */}
 
           <Input
             type="text"
@@ -88,6 +98,12 @@ const ClienteCreateModal: React.FC<ClienteCreateModalProps> = ({
             value={nombreRazonSocial}
             onChange={(e) => setNombreRazonSocial(e.target.value)}
             required
+          />
+          <Input
+            type="text"
+            placeholder="Propietario"
+            value={propietario}
+            onChange={(e) => setPropietario(e.target.value)}
           />
 
           <Input
@@ -99,17 +115,24 @@ const ClienteCreateModal: React.FC<ClienteCreateModalProps> = ({
 
           <Input
             type="text"
+            placeholder="Ubicación"
+            value={ubicacion}
+            onChange={(e) => setUbicacion(e.target.value)}
+          />
+
+          <Input
+            type="text"
             placeholder="Teléfono"
             value={telefono}
             onChange={(e) => setTelefono(e.target.value)}
           />
 
-          <Input
+          {/* <Input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-          />
+          /> */}
 
           <Select value={estado} onValueChange={(v: "activo" | "inactivo") => setEstado(v)}>
             <SelectTrigger>

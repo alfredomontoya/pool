@@ -1,6 +1,7 @@
 export interface Movimiento {
   id: number;
   user_id: number;
+  cliente_id?: number;
   nro: number;
   fecha: string; // formato "YYYY-MM-DD"
   nombre: string;
@@ -17,6 +18,7 @@ export interface Movimiento {
 export interface MovimientoCreate {
   fecha?: string;       // opcional (se puede autollenar con la actual)
   nombre: string;
+  cliente_id?: number;
   descripcion?: string;
   cantidad: number;
   umedida: string;
@@ -24,3 +26,14 @@ export interface MovimientoCreate {
   total: number;
   tipo: "ingreso" | "egreso";
 }
+
+export interface PaginatedMovimientos {
+  data: Movimiento[];
+  links: {
+    url: string | null;
+    label: string;
+    active: boolean;
+  }[];
+  meta?: any;
+}
+

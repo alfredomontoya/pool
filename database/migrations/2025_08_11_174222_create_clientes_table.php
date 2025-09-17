@@ -16,9 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('tipo_documento', ['CI', 'NIT'])->default('CI');
             $table->enum('tipo', ['NATURAL', 'JURIDICO'])->default('NATURAL');
-            $table->string('numero_documento')->unique();
+            $table->string('numero_documento')->unique()->nullable();
             $table->string('nombre_razon_social');
+            $table->string('propietario')->nullable();
             $table->string('direccion')->nullable();
+            $table->string('ubicacion')->nullable();
             $table->string('telefono')->nullable();
             $table->string('email')->nullable()->unique();
             $table->enum('estado', ['activo', 'inactivo'])->default('activo');

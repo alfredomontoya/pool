@@ -16,6 +16,8 @@ class Cliente extends Model
         'numero_documento',
         'nombre_razon_social',
         'direccion',
+        'ubicacion',
+        'propietario',
         'telefono',
         'email',
         'estado',

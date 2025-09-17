@@ -49,3 +49,23 @@ export interface DetalleVenta {
   // Campos auxiliares (solo frontend, no necesariamente en la BD)
   nombre?: string;            // para mostrar en tabla
 }
+
+
+import type { FormDataConvertible } from "@inertiajs/core";
+
+export interface DetalleVenta {
+  producto_id: number;
+  cantidad: number;
+  precio_unitario: number;
+  subtotal: number;
+}
+
+export interface VentaPayload {
+  cliente_id?: number;
+  tipo_pago_id?: number;
+  total: number;
+  efectivo: number;
+  cambio: number;
+  estado: string;
+  detalles: DetalleVenta[];
+}

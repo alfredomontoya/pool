@@ -1,6 +1,5 @@
 // resources/js/Hooks/useVentas.ts
 import { router } from '@inertiajs/react'
-import { Venta } from '@/types'
 
 export default function useVentas() {
   const store = (values: Partial<Venta>, onSuccess?: () => void) => {

@@ -1,19 +1,27 @@
 import { useState, useEffect } from "react";
 import { Cliente } from "@/interfaces/Clientes.Interface";
-import { DetalleVenta, TipoPago, Venta } from "@/interfaces/Venta.Interface";
-import DetalleVentaManager from "./DetalleVentaManager";
+import { TipoPago, Venta } from "@/interfaces/Venta.Interface";
 import { Producto } from "@/interfaces/Productos.Interface";
+import { DetalleVenta, VentaPayload } from "@/interfaces/VentaPayload";
 
 interface Props {
   venta?: Venta;
   clientes: Cliente[];
   tiposPago: TipoPago[];
-  productos: Producto[]; // 👈 añadimos lista de productos desde el backend
-  onSubmit: (data: Partial<Venta>) => void;
+  productos: Producto[];
+  onSubmit: (data: VentaPayload) => void;
 }
 
-export default function VentaForm({ venta, clientes, tiposPago, productos, onSubmit }: Props) {
-  const [tipoPagoId, setTipoPagoId] = useState<number>(venta?.tipo_pago_id ?? tiposPago[0]?.id);
+export default function VentaForm({
+  venta,
+  clientes,
+  tiposPago,
+  productos,
+  onSubmit,
+}: Props) {
+  const [tipoPagoId, setTipoPagoId] = useState<number>(
+    venta?.tipo_pago_id ?? tiposPago[0]?.id
+  );
   const [clienteQuery, setClienteQuery] = useState<string>("");
   const [clienteSeleccionado, setClienteSeleccionado] = useState<Cliente | null>(
     clientes.find((c) => c.id === venta?.cliente_id) ?? null
@@ -22,16 +30,12 @@ export default function VentaForm({ venta, clientes, tiposPago, productos, onSub
   const [efectivo, setEfectivo] = useState<number>(venta?.efectivo ?? 0);
   const [cambio, setCambio] = useState<number>(venta?.cambio ?? 0);
   const [estado, setEstado] = useState<string>(venta?.estado ?? "pendiente");
+  const [detalles, setDetalles] = useState<DetalleVenta[]>(venta?.detalles ?? []);
 
-  const [detalles, setDetalles] = useState<DetalleVenta[]>([]);
-
+  // Calcular cambio
   useEffect(() => {
     setCambio(Math.max(0, efectivo - total));
   }, [total, efectivo]);
-
-  useEffect(() => {
-    setTotal(detalles.reduce((acc, d) => acc + d.subtotal, 0));
-  }, [detalles]);
 
   const clientesFiltrados = clientes.filter((c) =>
     c.nombre_razon_social.toLowerCase().includes(clienteQuery.toLowerCase())
@@ -40,14 +44,16 @@ export default function VentaForm({ venta, clientes, tiposPago, productos, onSub
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!clienteSeleccionado) return alert("Debe seleccionar un cliente");
+    if (efectivo < total) return alert("El efectivo no puede ser menor al total");
 
     onSubmit({
-      tipo_pago_id: tipoPagoId,
       cliente_id: clienteSeleccionado.id,
+      tipo_pago_id: tipoPagoId,
       total,
       efectivo,
       cambio,
-      detalles, // 👈 enviamos los detalles
+      estado,
+      detalles,
     });
   };
 
@@ -102,12 +108,23 @@ export default function VentaForm({ venta, clientes, tiposPago, productos, onSub
         )}
         {clienteSeleccionado && (
           <p className="text-sm text-green-600 mt-1">
-            Cliente seleccionado: <strong>{clienteSeleccionado.nombre_razon_social}</strong>
+            Cliente seleccionado: <strong>{clienteSeleccionado.nombre_razon_social}, {clienteSeleccionado.direccion} </strong>
           </p>
         )}
       </div>
 
-      {/* Totales */}
+      {/* Total */}
+      <div>
+        <label className="block font-semibold mb-2">Total</label>
+        <input
+          type="number"
+          value={total}
+          onChange={(e) => setTotal(Number(e.target.value))}
+          className="border rounded p-2 w-full"
+        />
+      </div>
+
+      {/* Efectivo */}
       <div>
         <label className="block font-semibold mb-2">Efectivo</label>
         <input
@@ -118,20 +135,20 @@ export default function VentaForm({ venta, clientes, tiposPago, productos, onSub
         />
       </div>
 
+      {/* Cambio */}
       <div>
         <label className="block font-semibold mb-2">Cambio</label>
         <input
           type="number"
           value={cambio}
           readOnly
-          className="border rounded p-2 w-full"
+          className="border rounded p-2 w-full bg-gray-100"
         />
       </div>
 
-      {/* Componente de detalle */}
-      <DetalleVentaManager productos={productos} onChange={setDetalles} />
+      {/* Aquí iría tu manejador de detalles */}
+      {/* <DetalleVentaManager productos={productos} onChange={setDetalles} /> */}
 
-      {/* Botón Guardar */}
       <button
         type="submit"
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"

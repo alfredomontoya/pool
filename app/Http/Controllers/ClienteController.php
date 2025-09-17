@@ -50,15 +50,18 @@ class ClienteController extends Controller
             'user_id' => ['required', 'exists:users,id'],
             'tipo_documento' => ['required', Rule::in(['CI', 'NIT'])],
             'tipo' => ['required', Rule::in(['NATURAL', 'JURIDICO'])],
-            'numero_documento' => ['required', 'string', 'max:255', 'unique:clientes,numero_documento'],
+            'numero_documento' => ['nullable', 'string', 'max:255', 'unique:clientes,numero_documento'],
             'nombre_razon_social' => ['required', 'string', 'max:255'],
+            'propietario' => ['required', 'string', 'max:255'],
             'direccion' => ['nullable', 'string', 'max:255'],
+            'ubicacion' => ['nullable', 'string', 'max:255'],
             'telefono' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255', 'unique:clientes,email'],
             'estado' => ['required', Rule::in(['activo', 'inactivo'])],
             'notas' => ['nullable', 'string'],
         ]);
 
+        // dd($validated);
 
         Cliente::create($validated);
 

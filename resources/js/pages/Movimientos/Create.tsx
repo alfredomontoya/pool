@@ -1,26 +1,25 @@
+import { Head } from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
-import Form from "@/pages/Movimientos/Form";
-import { BreadcrumbItem } from "@/types";
+
+import { Cliente } from "@/interfaces/Clientes.Interface";
+import Form from "./Form";
 
 interface Props {
-  tipo: "ingreso" | "egreso"; // el tipo se pasa al crear
+  clientes: Cliente[];
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    { title: "Movimientos", href: "/movimientos" },
-];
-
-export default function Create({ tipo }: Props) {
-    console.log('Create')
-    console.log({ tipo });
+export default function Create({ clientes }: Props) {
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">
-        Nuevo Movimiento ({tipo === "ingreso" ? "Ingreso" : "Egreso"})
-      </h1>
-      <Form tipo={tipo} />
-    </div>
+    <AppLayout>
+      <Head title="Nuevo Movimiento" />
+
+      <div className="py-6">
+        <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
+          <div className="bg-white shadow rounded-lg p-6">
+            <Form movimiento={null} tipo="ingreso" clientes={clientes} />
+          </div>
+        </div>
+      </div>
     </AppLayout>
   );
 }

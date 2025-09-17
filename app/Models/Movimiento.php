@@ -10,6 +10,8 @@ class Movimiento extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
+        'cliente_id',
         'nro',
         'fecha',
         'nombre',
@@ -21,6 +23,7 @@ class Movimiento extends Model
         'tipo',
     ];
 
+
     protected static function boot()
     {
         parent::boot();
@@ -29,5 +32,15 @@ class Movimiento extends Model
             $ultimo = Movimiento::max('nro') ?? 0;
             $movimiento->nro = $ultimo + 1; // autoincremental desde 1
         });
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
