@@ -33,6 +33,11 @@ const mainNavItems: NavItem[] = [
         href: '/ventas',
         icon: LayoutGrid,
     },
+    {
+        title: 'Movimientos',
+        href: '/movimientos',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

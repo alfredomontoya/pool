@@ -1,10 +1,14 @@
 import Pagination from "@/components/Pagination";
 import AppLayout from "@/layouts/app-layout";
+import { BreadcrumbItem } from "@/types";
 import { Link } from "@inertiajs/react";
 
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: "Movimientos", href: "/movimientos" },
+];
 export default function Index({ movimientos, totalIngresos, totalEgresos, saldo }: any) {
   return (
-    <AppLayout>
+    <AppLayout breadcrumbs={breadcrumbs}>
       <div className="p-6">
         <h1 className="text-xl font-bold mb-4">Movimientos</h1>
 
