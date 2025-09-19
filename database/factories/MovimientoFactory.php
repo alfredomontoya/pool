@@ -24,6 +24,8 @@ class MovimientoFactory extends Factory
             'precio' => $precio,
             'total' => $cantidad * $precio,
             'tipo' => $this->faker->randomElement(['ingreso', 'egreso']),
+            'user_id' => \App\Models\User::all('id')->random(),
+            'cliente_id' => \App\Models\Cliente::all('id')->random(),
         ];
     }
 }

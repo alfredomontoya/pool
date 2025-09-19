@@ -29,7 +29,9 @@ class DatabaseSeeder extends Seeder
             'tipo_pagos',
             'ventas',
             'detalle_ventas',
-            'movimientos'
+            'movimientos',
+            'pedidos',
+            'detalle_pedidos',
         ]);
 
         User::factory()->create([
@@ -40,14 +42,15 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // UserSeeder::class,
             ClienteSeeder::class,
-            // CategoriaSeeder::class,
-            // ProductoSeeder::class,
-            // ProductoImagenSeeder::class,
-            // ProductoPrecioSeeder::class,
+            CategoriaSeeder::class,
+            ProductoSeeder::class,
+            ProductoImagenSeeder::class,
+            ProductoPrecioSeeder::class,
             // TipoPagoSeeder::class,
             // VentaSeeder::class,
             // DetalleVentaSeeder::class,
-            // MovimientoSeeder::class,
+            MovimientoSeeder::class,
+            PedidoSeeder::class,
         ]);
     }
 

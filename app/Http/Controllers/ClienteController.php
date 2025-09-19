@@ -36,6 +36,16 @@ class ClienteController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('search', '');
+        $clientes = Cliente::where('nombre_razon_social', 'like', "%{$query}%")->get();
+
+        return response()->json([
+            'data' => $clientes // Axios espera un array en res.data.data
+        ]);
+    }
+
     public function create()
     {
         return Inertia::render('Clientes/Create');

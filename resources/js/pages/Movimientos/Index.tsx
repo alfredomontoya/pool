@@ -47,7 +47,7 @@ export default function Index({ movimientos, totalIngresos, totalEgresos, saldo 
 
         {/* Tabla */}
         <ItemsTable movimientos={movimientos} />
-        
+
       </div>
     </AppLayout>
   );

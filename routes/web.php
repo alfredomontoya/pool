@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProductoImagenController;
 use App\Http\Controllers\ProductoPrecioController;
 use App\Http\Controllers\MovimientoController;
+use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\VentaController;
 use App\Http\Middleware\SetUserId;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth', SetUserId::class])->group(function () {
+    Route::get('/clientes/search', [ClienteController::class, 'search']);  // Buscar clientes (opcional)
     Route::resource('clientes', ClienteController::class);
     Route::resource('categorias', CategoriaController::class);
     Route::get('productos/createOrUpdate/{id}', [ProductoController::class, 'createOrUpdate'])->name('productos.createOrUpdate');
@@ -35,6 +37,16 @@ Route::middleware(['auth', SetUserId::class])->group(function () {
 
     Route::resource('ventas', VentaController::class);
     Route::resource('movimientos', MovimientoController::class);
+
+    Route::prefix('pedidos')->group(function () {
+        Route::get('/', [PedidoController::class, 'index']);            // Listar pedidos
+
+        Route::get('/create', [PedidoController::class, 'create']);     // Formulario para crear pedido
+        Route::post('/store', [PedidoController::class, 'store']);      // Crear pedido
+        Route::get('/{pedido}', [PedidoController::class, 'show']);     // Ver un pedido (opcional)
+        Route::put('/update/{pedido}', [PedidoController::class, 'update']); // Actualizar pedido
+        Route::delete('/{pedido}', [PedidoController::class, 'destroy']);    // Eliminar pedido
+    });
 
 });
 

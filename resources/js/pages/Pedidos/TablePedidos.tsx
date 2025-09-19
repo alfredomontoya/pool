@@ -1,0 +1,48 @@
+import { Pedido } from '@/interfaces/Pedidos.Interface';
+import { FC } from 'react';
+
+interface Props {
+  pedidos: Pedido[];
+  onDelete: (url: string, id: number) => void;
+}
+
+const TablePedidos: FC<Props> = ({ pedidos, onDelete }) => {
+  return (
+    <table className="min-w-full border">
+      <thead>
+        <tr className="">
+          <th className="border px-4 py-2">Nro</th>
+          <th className="border px-4 py-2">Cliente</th>
+          <th className="border px-4 py-2">Usuario</th>
+          <th className="border px-4 py-2">Fecha</th>
+          <th className="border px-4 py-2">Estado</th>
+          <th className="border px-4 py-2">Total</th>
+          <th className="border px-4 py-2">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {pedidos.map(p => (
+          <tr key={p.id}>
+            <td className="border px-4 py-2">{p.nro}</td>
+            <td className="border px-4 py-2">{p.cliente?.nombre_razon_social}</td>
+            <td className="border px-4 py-2">{p.user?.name}</td>
+            <td className="border px-4 py-2">{p.fecha}</td>
+            <td className="border px-4 py-2">{p.estado}</td>
+            <td className="border px-4 py-2">{p.total}</td>
+            <td className="border px-4 py-2 space-x-2">
+              <a href={`/pedidos/edit/${p.id}`} className="text-blue-500">Editar</a>
+              <button
+                onClick={() => onDelete(`/api/pedidos/${p.id}`, p.id)}
+                className="text-red-500"
+              >
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default TablePedidos;
