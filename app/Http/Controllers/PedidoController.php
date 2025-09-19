@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Pedido\StorePedidoRequest;
 use App\Http\Requests\Pedido\UpdatePedidoRequest;
 use App\Models\Pedido;
+use App\Models\Producto;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -16,7 +17,7 @@ class PedidoController extends Controller
     public function index()
     {
         try {
-            $pedidos = Pedido::with(['cliente', 'user', 'detalles'])->get();
+            $pedidos = Pedido::with(['cliente', 'user', 'detalles'])->paginate(5);
             return Inertia::render('Pedidos/Index', [
                 'pedidos' => $pedidos
             ]);
@@ -30,7 +31,10 @@ class PedidoController extends Controller
 
     public function create()
     {
-        return Inertia::render('Pedidos/Create');
+        $productos = Producto::with('precioActivo')->get();
+        return Inertia::render('Pedidos/Create', [
+            'productos' => $productos
+        ]);
     }
 
     // Crear pedido con transacción y manejo de errores

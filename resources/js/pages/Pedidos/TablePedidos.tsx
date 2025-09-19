@@ -1,8 +1,9 @@
 import { Pedido } from '@/interfaces/Pedidos.Interface';
+import { Paginated } from '@/interfaces/Venta.Interface';
 import { FC } from 'react';
 
 interface Props {
-  pedidos: Pedido[];
+  pedidos: Paginated<Pedido>;
   onDelete: (url: string, id: number) => void;
 }
 
@@ -21,7 +22,7 @@ const TablePedidos: FC<Props> = ({ pedidos, onDelete }) => {
         </tr>
       </thead>
       <tbody>
-        {pedidos.map(p => (
+        {pedidos.data.map(p => (
           <tr key={p.id}>
             <td className="border px-4 py-2">{p.nro}</td>
             <td className="border px-4 py-2">{p.cliente?.nombre_razon_social}</td>

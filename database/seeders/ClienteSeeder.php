@@ -17,5 +17,7 @@ class ClienteSeeder extends Seeder
         Cliente::factory()
             ->count(10)
             ->create();
+        Cliente::factory(['nombre_razon_social' => 'Tigo', 'propietario' => 'Gabriela'])
+            ->create();
     }
 }

@@ -17,6 +17,7 @@ export interface DetallePedido {
   producto_id: string;
   cantidad: number;
   precio: number;
+  subtotal?: number; // opcional, puede calcularse como cantidad * precio
 }
 
 export interface PedidoFormData {

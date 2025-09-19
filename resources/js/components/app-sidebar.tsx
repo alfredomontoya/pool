@@ -38,6 +38,12 @@ const mainNavItems: NavItem[] = [
         href: '/movimientos',
         icon: LayoutGrid,
     },
+
+    {
+        title: 'Pedidos',
+        href: '/pedidos',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

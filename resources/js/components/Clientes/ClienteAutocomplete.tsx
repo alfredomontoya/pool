@@ -58,7 +58,7 @@ const ClienteAutocomplete: FC<Props> = ({ form, setData }) => {
   // Seleccionar cliente
   const selectCliente = (cliente: Cliente) => {
     setData('cliente_id', String(cliente.id));
-    setQuery(cliente.nombre_razon_social);
+    setQuery(cliente.nombre_razon_social + ' - ' + cliente.propietario);
     setShowDropdown(false);
     setResults([]);
     setIsSelected(true); // <-- marcar como seleccionado
@@ -106,7 +106,7 @@ const ClienteAutocomplete: FC<Props> = ({ form, setData }) => {
               onMouseEnter={() => setActiveIndex(index)}
               onClick={() => selectCliente(cliente)}
             >
-              {cliente.nombre_razon_social}
+              {cliente.nombre_razon_social} - {cliente.propietario}
             </li>
           ))}
         </ul>

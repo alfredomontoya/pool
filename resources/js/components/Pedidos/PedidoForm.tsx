@@ -1,10 +1,12 @@
+import { FC, useEffect } from 'react';
 import { DetallePedido, PedidoFormData } from '@/interfaces/Pedidos.Interface';
-import { FC } from 'react';
-import ClienteSearch from '../Clientes/ClienteSearch';
+import { Producto } from '@/interfaces/Productos.Interface';
 import ClienteAutocomplete from '../Clientes/ClienteAutocomplete';
+import PedidoDetalles from './PedidoDetalles';
 
 interface Props {
   form: PedidoFormData;
+  productos: Producto[];
   setData: (key: keyof PedidoFormData, value: any) => void;
   addDetalle: (detalle: DetallePedido) => void;
   updateDetalle: (index: number, detalle: DetallePedido) => void;
@@ -12,25 +14,34 @@ interface Props {
   onSubmit: () => void;
 }
 
-const PedidoForm: FC<Props> = ({ form, setData, addDetalle, updateDetalle, removeDetalle, onSubmit }) => {
-  return (
-    <div className="space-y-4">
-      {/* Cliente */}
-      {/* Cliente */}
-    <div>
-    <label className="block font-bold">Cliente</label>
-    <ClienteAutocomplete form={form} setData={setData} />
-    </div>
+const PedidoForm: FC<Props> = ({
+  form,
+  productos,
+  setData,
+  addDetalle,
+  updateDetalle,
+  removeDetalle,
+  onSubmit,
+}) => {
+  console.log('Productos en PedidoForm:', productos);
+  // Inicializar con los 3 primeros productos de la DB
+  useEffect(() => {
+    if (form.detalles.length === 0 && productos.length > 0) {
+      const iniciales: DetallePedido[] = productos.slice(0, 3).map((p) => ({
+        producto_id: String(p.id), // 🔹 convertido a string
+        cantidad: 0,
+        precio: Number(p.precio_activo?.precio_venta ?? 0), // 🔹 nunca undefined
+      }));
+      setData('detalles', iniciales);
+    }
+  }, [form.detalles, productos, setData]);
 
-      {/* Usuario */}
+  return (
+    <div className="p-4">
+      {/* Cliente */}
       <div>
-        <label className="block font-bold">Usuario</label>
-        <input
-          type="text"
-          value={form.user_id}
-          onChange={e => setData('user_id', e.target.value)}
-          className="border p-2 w-full"
-        />
+        <label className="block font-bold">Cliente</label>
+        <ClienteAutocomplete form={form} setData={setData} />
       </div>
 
       {/* Fecha */}
@@ -39,7 +50,7 @@ const PedidoForm: FC<Props> = ({ form, setData, addDetalle, updateDetalle, remov
         <input
           type="date"
           value={form.fecha}
-          onChange={e => setData('fecha', e.target.value)}
+          onChange={(e) => setData('fecha', e.target.value)}
           className="border p-2 w-full"
         />
       </div>
@@ -49,66 +60,28 @@ const PedidoForm: FC<Props> = ({ form, setData, addDetalle, updateDetalle, remov
         <label className="block font-bold">Estado</label>
         <select
           value={form.estado}
-          onChange={e => setData('estado', e.target.value)}
+          onChange={(e) => setData('estado', e.target.value)}
           className="border p-2 w-full"
         >
           <option value="pendiente">Pendiente</option>
-          <option value="confirmado">Confirmado</option>
-          <option value="cancelado">Cancelado</option>
-          <option value="entregado">Entregado</option>
         </select>
       </div>
 
       {/* Detalles */}
-      <div>
-        <label className="block font-bold">Detalles</label>
-        {form.detalles.map((detalle, index) => (
-          <div key={index} className="flex space-x-2 mb-2">
-            <input
-              type="text"
-              placeholder="Producto ID"
-              value={detalle.producto_id}
-              onChange={e => updateDetalle(index, { ...detalle, producto_id: e.target.value })}
-              className="border p-2 w-1/3"
-            />
-            <input
-              type="number"
-              placeholder="Cantidad"
-              value={detalle.cantidad}
-              onChange={e => updateDetalle(index, { ...detalle, cantidad: Number(e.target.value) })}
-              className="border p-2 w-1/3"
-            />
-            <input
-              type="number"
-              placeholder="Precio"
-              value={detalle.precio}
-              onChange={e => updateDetalle(index, { ...detalle, precio: Number(e.target.value) })}
-              className="border p-2 w-1/3"
-            />
-            <button
-              type="button"
-              onClick={() => removeDetalle(index)}
-              className="bg-red-500 text-white px-2 rounded"
-            >
-              X
-            </button>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() => addDetalle({ producto_id: '', cantidad: 1, precio: 0 })}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Agregar Detalle
-        </button>
-      </div>
+      <PedidoDetalles
+        detalles={form.detalles}
+        productos={productos}
+        addDetalle={addDetalle}
+        updateDetalle={updateDetalle}
+        removeDetalle={removeDetalle}
+      />
 
       {/* Observación */}
       <div>
         <label className="block font-bold">Observación</label>
         <textarea
           value={form.observacion}
-          onChange={e => setData('observacion', e.target.value)}
+          onChange={(e) => setData('observacion', e.target.value)}
           className="border p-2 w-full"
         />
       </div>

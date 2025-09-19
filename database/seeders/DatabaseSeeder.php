@@ -20,24 +20,24 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->truncateTables([
-            'users',
+            // 'users',
             'clientes',
             'categorias',
             'productos',
             'producto_imagens',
             'producto_precios',
-            'tipo_pagos',
-            'ventas',
-            'detalle_ventas',
-            'movimientos',
+            // 'tipo_pagos',
+            // 'ventas',
+            // 'detalle_ventas',
+            // 'movimientos',
             'pedidos',
             'detalle_pedidos',
         ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
         $this->call([
             // UserSeeder::class,
@@ -45,11 +45,11 @@ class DatabaseSeeder extends Seeder
             CategoriaSeeder::class,
             ProductoSeeder::class,
             ProductoImagenSeeder::class,
-            ProductoPrecioSeeder::class,
-            // TipoPagoSeeder::class,
-            // VentaSeeder::class,
-            // DetalleVentaSeeder::class,
-            MovimientoSeeder::class,
+            // ProductoPrecioSeeder::clasps,
+            // // TipoPagoSeeder::class,
+            // // VentaSeeder::class,
+            // // DetalleVentaSeeder::class,
+            // MovimientoSeeder::class,
             PedidoSeeder::class,
         ]);
     }

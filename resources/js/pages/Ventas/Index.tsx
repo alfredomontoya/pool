@@ -8,25 +8,6 @@ import { Paginated, Venta } from "@/interfaces/Venta.Interface";
 import { useVentas } from "@/hooks/Ventas/useVentas"; // importa tu hook
 
 // Venta (Pedido)
-// Elegir Cliente
-// Ver Ubicación, dirección y teléfono del cliente
-// registrar Detalle
-// 	Producto	Cantidad	Total
-// 	####		###		###
-// 	####		###		###
-
-// 	####		###		###
-
-// Total 100 (Se calcula automaticamente)
-// Tipo Pago: Inicialmente Vacio: QR, Transferencia, Efectivo
-// Pago Inicial 20 
-// Saldo 80
-
-// Pago Final 100
-// Cambio:	20
-// Estado: Pendiente | Cancelado
-// Fecha: Actual
-
 interface Props {
   ventas: Paginated<Venta>;
   filters: { search?: string };
