@@ -28,14 +28,18 @@ export default function Create({ productos }: Props) {
 
   // Al enviar el formulario
   const handleSubmit = async () => {
-    try {
-      await createPedido('/api/pedidos/store', form);
-      alert('Pedido creado correctamente');
-    //   navigate('/pedidos'); // Volver al listado
-    } catch (error: any) {
-      alert('Error: ' + error.response?.data?.message || 'Desconocido');
-    }
-  };
+  try {
+    const result = await createPedido('/pedidos/store', form);
+    console.log('Pedido creado:', result);
+    alert('Pedido creado correctamente');
+  } catch (errors: any) {
+    // aquí recibimos directamente los errores de validación
+    console.log('Errores de validación:', errors);
+
+    const mensajes = Object.values(errors).flat().join('\n');
+    alert('Errores de validación:\n' + mensajes);
+  }
+};
 
   return (
     <AppLayout breadcrumbs={[{ title: 'Pedidos', href: '/pedidos' }]}>

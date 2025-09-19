@@ -18,8 +18,9 @@ class StorePedidoRequest extends FormRequest
             'estado' => ['required','in:pendiente,confirmado,cancelado,entregado'],
             'detalles' => ['required','array','min:1'],
             'detalles.*.producto_id' => ['required','exists:productos,id'],
-            'detalles.*.cantidad' => ['required','integer','min:1'],
+            'detalles.*.cantidad' => ['required','integer','min:0'],
             'detalles.*.precio' => ['required','numeric','min:0'],
+            'detalles.*.subtotal' => ['required','numeric','min:0'],
         ];
     }
 

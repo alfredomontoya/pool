@@ -32,11 +32,19 @@ export default function usePedidosCRUD() {
   // Crear pedido
   const createPedido = async (url: string, form: PedidoFormData): Promise<void> => {
     try {
-      await axios.post(url, form);
-      await fetchPedidos(url.replace('/store', '')); // refresca la lista
-    } catch (error) {
-      console.error('Error al crear pedido', error);
+    const res = await axios.post(url, form);
+    // refresca la lista si quieres
+    await fetchPedidos(url.replace('/store', ''));
+    return res.data; // ✅ devuelve datos al handleSubmit
+  } catch (error: any) {
+    // ✅ devuelve el error para manejarlo afuera
+    if (error.response?.status === 422) {
+      // errores de validación
+      return Promise.reject(error.response.data.errors);
+    } else {
+      return Promise.reject(error);
     }
+  }
   };
 
   // Actualizar pedido

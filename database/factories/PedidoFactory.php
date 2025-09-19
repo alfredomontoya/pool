@@ -15,7 +15,7 @@ class PedidoFactory extends Factory
         return [
             'cliente_id' => Cliente::all('id')->random(),
             'user_id' => User::all('id')->random(),
-            'nro' => $this->faker->unique()->numberBetween(1, 9999),
+            // 'nro' => $this->faker->unique()->numberBetween(1, 9999),
             'fecha' => $this->faker->date(),
             'estado' => $this->faker->randomElement(['pendiente','confirmado','cancelado','entregado']),
             'total' => $this->faker->randomFloat(2, 50, 500),

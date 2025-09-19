@@ -31,7 +31,7 @@ class PedidoController extends Controller
 
     public function create()
     {
-        $productos = Producto::with('precioActivo')->get();
+        $productos = Producto::oerderBy('id', 'desc')->with('precioActivo')->get();
         return Inertia::render('Pedidos/Create', [
             'productos' => $productos
         ]);
@@ -40,10 +40,12 @@ class PedidoController extends Controller
     // Crear pedido con transacción y manejo de errores
     public function store(StorePedidoRequest $request): JsonResponse
     {
+        // dd($request->all());
         try {
             $pedido = DB::transaction(function () use ($request) {
                 $pedido = Pedido::create($request->validated());
 
+                
                 foreach ($request->detalles as $detalle) {
                     $pedido->detalles()->create($detalle);
                 }

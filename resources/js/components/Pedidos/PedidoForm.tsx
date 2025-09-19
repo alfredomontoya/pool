@@ -1,3 +1,4 @@
+// PedidoForm.tsx
 import { FC, useEffect } from 'react';
 import { DetallePedido, PedidoFormData } from '@/interfaces/Pedidos.Interface';
 import { Producto } from '@/interfaces/Productos.Interface';
@@ -12,6 +13,7 @@ interface Props {
   updateDetalle: (index: number, detalle: DetallePedido) => void;
   removeDetalle: (index: number) => void;
   onSubmit: () => void;
+  errors?: { [key: string]: string[] }; // errores de validación
 }
 
 const PedidoForm: FC<Props> = ({
@@ -22,19 +24,31 @@ const PedidoForm: FC<Props> = ({
   updateDetalle,
   removeDetalle,
   onSubmit,
+  errors = {},
 }) => {
-  console.log('Productos en PedidoForm:', productos);
+
   // Inicializar con los 3 primeros productos de la DB
   useEffect(() => {
     if (form.detalles.length === 0 && productos.length > 0) {
-      const iniciales: DetallePedido[] = productos.slice(0, 3).map((p) => ({
-        producto_id: String(p.id), // 🔹 convertido a string
-        cantidad: 0,
-        precio: Number(p.precio_activo?.precio_venta ?? 0), // 🔹 nunca undefined
-      }));
+      const iniciales: DetallePedido[] = productos.slice(0, 3).map((p) => {
+        const precio = Number(p.precio_activo?.precio_venta ?? 0);
+        const cantidad = 12; // cantidad por defecto
+        return {
+          producto_id: String(p.id),
+          cantidad,
+          precio,
+          subtotal: precio * cantidad,
+        };
+      });
       setData('detalles', iniciales);
     }
   }, [form.detalles, productos, setData]);
+
+  // Función para actualizar un detalle y recalcular subtotal
+  const handleUpdateDetalle = (index: number, detalle: DetallePedido) => {
+    const subtotal = detalle.cantidad * detalle.precio;
+    updateDetalle(index, { ...detalle, subtotal });
+  };
 
   return (
     <div className="p-4">
@@ -42,6 +56,7 @@ const PedidoForm: FC<Props> = ({
       <div>
         <label className="block font-bold">Cliente</label>
         <ClienteAutocomplete form={form} setData={setData} />
+        {errors.cliente_id && <p className="text-red-500 text-sm">{errors.cliente_id[0]}</p>}
       </div>
 
       {/* Fecha */}
@@ -53,6 +68,7 @@ const PedidoForm: FC<Props> = ({
           onChange={(e) => setData('fecha', e.target.value)}
           className="border p-2 w-full"
         />
+        {errors.fecha && <p className="text-red-500 text-sm">{errors.fecha[0]}</p>}
       </div>
 
       {/* Estado */}
@@ -64,16 +80,24 @@ const PedidoForm: FC<Props> = ({
           className="border p-2 w-full"
         >
           <option value="pendiente">Pendiente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="cancelado">Cancelado</option>
+          <option value="entregado">Entregado</option>
         </select>
+        {errors.estado && <p className="text-red-500 text-sm">{errors.estado[0]}</p>}
       </div>
 
       {/* Detalles */}
       <PedidoDetalles
         detalles={form.detalles}
         productos={productos}
-        addDetalle={addDetalle}
-        updateDetalle={updateDetalle}
+        addDetalle={(detalle) => {
+          // calcular subtotal al agregar
+          addDetalle({ ...detalle, subtotal: detalle.cantidad * detalle.precio });
+        }}
+        updateDetalle={handleUpdateDetalle}
         removeDetalle={removeDetalle}
+        errors={errors}
       />
 
       {/* Observación */}
@@ -84,13 +108,14 @@ const PedidoForm: FC<Props> = ({
           onChange={(e) => setData('observacion', e.target.value)}
           className="border p-2 w-full"
         />
+        {errors.observacion && <p className="text-red-500 text-sm">{errors.observacion[0]}</p>}
       </div>
 
       {/* Botón Guardar */}
       <button
         type="button"
         onClick={onSubmit}
-        className="bg-green-500 text-white px-4 py-2 rounded"
+        className="bg-green-500 text-white px-4 py-2 rounded mt-2"
       >
         Guardar
       </button>

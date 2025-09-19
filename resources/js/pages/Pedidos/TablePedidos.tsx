@@ -24,7 +24,7 @@ const TablePedidos: FC<Props> = ({ pedidos, onDelete }) => {
       <tbody>
         {pedidos.data.map(p => (
           <tr key={p.id}>
-            <td className="border px-4 py-2">{p.nro}</td>
+            <td className="border px-4 py-2">{p.id}</td>
             <td className="border px-4 py-2">{p.cliente?.nombre_razon_social}</td>
             <td className="border px-4 py-2">{p.user?.name}</td>
             <td className="border px-4 py-2">{p.fecha}</td>
