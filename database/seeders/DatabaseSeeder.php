@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Captacion;
 use App\Models\Categoria;
 use App\Models\Producto;
 use App\Models\ProductoImagen;
@@ -42,15 +43,16 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // UserSeeder::class,
             ClienteSeeder::class,
-            CategoriaSeeder::class,
-            ProductoSeeder::class,
-            ProductoImagenSeeder::class,
+            // CategoriaSeeder::class,
+            // ProductoSeeder::class,
+            // ProductoImagenSeeder::class,
             // ProductoPrecioSeeder::clasps,
             // // TipoPagoSeeder::class,
             // // VentaSeeder::class,
             // // DetalleVentaSeeder::class,
             // MovimientoSeeder::class,
-            PedidoSeeder::class,
+            // PedidoSeeder::class,
+            CaptacionSeeder::class,
         ]);
     }
 

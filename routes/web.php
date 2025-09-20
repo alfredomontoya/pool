@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CaptacionController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProductoController;
@@ -47,6 +48,9 @@ Route::middleware(['auth', SetUserId::class])->group(function () {
         Route::put('/update/{pedido}', [PedidoController::class, 'update']); // Actualizar pedido
         Route::delete('/{pedido}', [PedidoController::class, 'destroy']);    // Eliminar pedido
     });
+
+    Route::resource('captaciones', CaptacionController::class);
+
 
 });
 
