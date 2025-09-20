@@ -27,7 +27,7 @@ export default function Create() {
     e.preventDefault();
     post(route("clientes.store"), {
       onSuccess: () => {
-        reset()
+        // reset()
       },
       onError: () => {
         console.error(errors);

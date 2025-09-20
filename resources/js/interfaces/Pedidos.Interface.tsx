@@ -25,7 +25,7 @@ export interface PedidoFormData {
   user_id: string;
   fecha: string;
   estado: 'pendiente' | 'confirmado' | 'cancelado' | 'entregado';
-  detalles: DetallePedido[];
+//   detalles: DetallePedido[];
   observacion?: string;
   [key: string]: string | DetallePedido[] | undefined; // para tipado flexible
 }

@@ -29,10 +29,12 @@ const PedidoForm: FC<Props> = ({
 
   // Inicializar con los 3 primeros productos de la DB
   useEffect(() => {
-    if (form.detalles.length === 0 && productos.length > 0) {
+    console.log('PedidoForm ')
+    console.log(productos)
+    if (form.detalles!.length === 0 && productos.length > 0) {
       const iniciales: DetallePedido[] = productos.slice(0, 3).map((p) => {
         const precio = Number(p.precio_activo?.precio_venta ?? 0);
-        const cantidad = 12; // cantidad por defecto
+        const cantidad = 0; // cantidad por defecto
         return {
           producto_id: String(p.id),
           cantidad,

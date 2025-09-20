@@ -31,7 +31,7 @@ class PedidoController extends Controller
 
     public function create()
     {
-        $productos = Producto::oerderBy('id', 'desc')->with('precioActivo')->get();
+        $productos = Producto::orderBy('id', 'desc')->with('precioActivo')->get();
         return Inertia::render('Pedidos/Create', [
             'productos' => $productos
         ]);
@@ -45,17 +45,17 @@ class PedidoController extends Controller
             $pedido = DB::transaction(function () use ($request) {
                 $pedido = Pedido::create($request->validated());
 
-                
+
                 foreach ($request->detalles as $detalle) {
                     $pedido->detalles()->create($detalle);
                 }
 
-                return $pedido;
+                // return $pedido;
             });
 
             return response()->json([
                 'message' => 'Pedido creado correctamente',
-                'pedido' => $pedido->load('detalles')
+                'pedido' => $pedido,
             ]);
         } catch (Exception $e) {
             return response()->json([

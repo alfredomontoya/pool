@@ -27,10 +27,10 @@ class DatabaseSeeder extends Seeder
             'productos',
             'producto_imagens',
             'producto_precios',
-            // 'tipo_pagos',
-            // 'ventas',
-            // 'detalle_ventas',
-            // 'movimientos',
+            'tipo_pagos',
+            'ventas',
+            'detalle_ventas',
+            'movimientos',
             'pedidos',
             'detalle_pedidos',
         ]);
@@ -43,16 +43,16 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // UserSeeder::class,
             ClienteSeeder::class,
-            // CategoriaSeeder::class,
-            // ProductoSeeder::class,
-            // ProductoImagenSeeder::class,
-            // ProductoPrecioSeeder::clasps,
+            CategoriaSeeder::class,
+            ProductoSeeder::class,
+            ProductoImagenSeeder::class,
+            ProductoPrecioSeeder::class,
             // // TipoPagoSeeder::class,
             // // VentaSeeder::class,
             // // DetalleVentaSeeder::class,
             // MovimientoSeeder::class,
-            // PedidoSeeder::class,
-            CaptacionSeeder::class,
+            PedidoSeeder::class,
+            // CaptacionSeeder::class,
         ]);
     }
 

@@ -12,14 +12,7 @@ interface Props {
   errors?: { [key: string]: string[] }; // errores de validación
 }
 
-const PedidoDetalles: FC<Props> = ({
-  detalles,
-  productos,
-  addDetalle,
-  updateDetalle,
-  removeDetalle,
-  errors = {},
-}) => {
+const PedidoDetalles: FC<Props> = ({detalles, productos, addDetalle, updateDetalle, removeDetalle, errors = {},}) => {
 
   const handleProductoChange = (index: number, productoId: string) => {
     const producto = productos.find(p => String(p.id) === productoId);
@@ -93,9 +86,19 @@ const PedidoDetalles: FC<Props> = ({
               </td>
               <td className="border px-2 py-1 text-right">
                 {detalle.precio.toFixed(2)}
+                {errors[`detalles.${index}.precio`] && (
+                  <p className="text-red-500 text-sm">
+                    {errors[`detalles.${index}.precio`][0]}
+                  </p>
+                )}
               </td>
               <td className="border px-2 py-1 text-right">
                 {(detalle.subtotal ?? detalle.cantidad * detalle.precio).toFixed(2)}
+                {errors[`detalles.${index}.subtotal`] && (
+                  <p className="text-red-500 text-sm">
+                    {errors[`detalles.${index}.subtotal`][0]}
+                  </p>
+                )}
               </td>
               <td className="border px-2 py-1 text-center">
                 <button
@@ -110,6 +113,7 @@ const PedidoDetalles: FC<Props> = ({
           ))}
         </tbody>
       </table>
+      {/* {errors.detalles && <p className="text-red-500 text-sm">{errors.detalles[0]}</p>} */}
 
       <button
         type="button"
