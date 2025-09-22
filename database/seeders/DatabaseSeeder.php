@@ -35,24 +35,21 @@ class DatabaseSeeder extends Seeder
             'detalle_pedidos',
         ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+
 
         $this->call([
-            // UserSeeder::class,
+            UserSeeder::class,
             ClienteSeeder::class,
             CategoriaSeeder::class,
             ProductoSeeder::class,
             ProductoImagenSeeder::class,
             ProductoPrecioSeeder::class,
-            // // TipoPagoSeeder::class,
-            // // VentaSeeder::class,
-            // // DetalleVentaSeeder::class,
-            // MovimientoSeeder::class,
+            TipoPagoSeeder::class,
+            VentaSeeder::class,
+            DetalleVentaSeeder::class,
+            MovimientoSeeder::class,
             PedidoSeeder::class,
-            // CaptacionSeeder::class,
+            CaptacionSeeder::class,
         ]);
     }
 

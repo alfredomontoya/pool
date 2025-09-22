@@ -20,18 +20,14 @@ class ProductoImagenFactory extends Factory
 
     return [
       'producto_id' => $producto->id,
-      'imagen' => function () {
-        //   try {
-              $filename = 'productos/' . uniqid() . '.jpg';
-              $url = 'https://dummyimage.com/640x480/' . ltrim($this->faker->hexColor(), '#'). '/' . ltrim($this->faker->hexColor(), '#'). '.png&text=' . $this->faker->text(5);
-              $response = Http::timeout(20)->get($url); // Timeout 20s
-              Storage::disk('public')->put($filename, $response->body());
-              return $filename;
-        //   } catch (\Exception $e) {
-        //       // En caso de fallo, fallback a imagen local
-        //       return 'images/default-product.png';
-        //   }
-      },
+      // 'imagen' => function () {
+      //         $filename = 'productos/' . uniqid() . '.jpg';
+      //         $url = 'https://dummyimage.com/640x480/' . ltrim($this->faker->hexColor(), '#'). '/' . ltrim($this->faker->hexColor(), '#'). '.png&text=' . $this->faker->text(5);
+      //         $response = Http::timeout(20)->get($url); // Timeout 20s
+      //         Storage::disk('public')->put($filename, $response->body());
+      //         return $filename;
+      // },
+      'imagen' => null,
       'es_principal' => $this->faker->boolean(30), // 30% chance
       'user_id' => $user->id,
     ];
