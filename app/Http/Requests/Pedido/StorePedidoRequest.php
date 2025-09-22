@@ -16,7 +16,7 @@ class StorePedidoRequest extends FormRequest
             'user_id' => ['required','exists:users,id'],
             'fecha' => ['required','date'],
             'estado' => ['required','in:pendiente,confirmado,cancelado,entregado'],
-            'observacion' => ['required','string'],
+            'observacion' => ['nullable','string'],
             'detalles' => ['required','array','min:1'],
             'detalles.*.producto_id' => ['required','exists:productos,id'],
             'detalles.*.cantidad' => ['required','integer','min:1'],

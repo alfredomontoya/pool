@@ -5,9 +5,10 @@ import { FC } from 'react';
 interface Props {
   pedidos: Paginated<Pedido>;
   onDelete: (url: string, id: number) => void;
+  search: string
 }
 
-const TablePedidos: FC<Props> = ({ pedidos, onDelete }) => {
+const TablePedidos: FC<Props> = ({ pedidos, onDelete, search }) => {
   return (
     <table className="min-w-full border">
       <thead>

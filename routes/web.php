@@ -40,13 +40,13 @@ Route::middleware(['auth', SetUserId::class])->group(function () {
     Route::resource('movimientos', MovimientoController::class);
 
     Route::prefix('pedidos')->group(function () {
-        Route::get('/', [PedidoController::class, 'index']);            // Listar pedidos
+        Route::get('/', [PedidoController::class, 'index'])->name('pedidos.index');            // Listar pedidos
 
-        Route::get('/create', [PedidoController::class, 'create']);     // Formulario para crear pedido
-        Route::post('/store', [PedidoController::class, 'store']);      // Crear pedido
-        Route::get('/{pedido}', [PedidoController::class, 'show']);     // Ver un pedido (opcional)
-        Route::put('/update/{pedido}', [PedidoController::class, 'update']); // Actualizar pedido
-        Route::delete('/{pedido}', [PedidoController::class, 'destroy']);    // Eliminar pedido
+        Route::get('/create', [PedidoController::class, 'create'])->name('pedidos.create');     // Formulario para crear pedido
+        Route::post('/store', [PedidoController::class, 'store'])->name('pedidos.store');      // Crear pedido
+        Route::get('/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');     // Ver un pedido (opcional)
+        Route::put('/update/{pedido}', [PedidoController::class, 'update'])->name('pedidos.update'); // Actualizar pedido
+        Route::delete('/{pedido}', [PedidoController::class, 'destroy'])->name('pedidos.destroy');    // Eliminar pedido
     });
 
     Route::resource('captaciones', CaptacionController::class);

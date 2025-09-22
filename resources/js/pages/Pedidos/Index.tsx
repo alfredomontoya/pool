@@ -9,7 +9,7 @@
 
 // Total 100 (Se calcula automaticamente)
 // Tipo Pago: Inicialmente Vacio: QR, Transferencia, Efectivo
-// Pago Inicial 20 
+// Pago Inicial 20
 // Saldo 80
 
 // Pago Final 100
@@ -18,23 +18,29 @@
 // Fecha: Actual
 
 import usePedidosCRUD from '@/hooks/Pedido/usePedidosCRUD';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import TablePedidos from './TablePedidos';
 import { Pedido } from '@/interfaces/Pedidos.Interface';
 import AppLayout from '@/layouts/app-layout';
 import { Paginated } from '@/interfaces/Venta.Interface';
 import { Link } from '@inertiajs/react';
+import SearchComponent from '@/components/helpers/SearchComponent';
+import Pagination from '@/components/Pagination';
+import usePedido from '@/hooks/Pedido/usePedido';
+import useSearch from '@/hooks/Pedido/useSearch';
 // import TablePedidos from './components/TablePedidos';
 
 
 interface Props {
     pedidos: Paginated<Pedido>;
+    filters?: { search?: string };
 }
 
-export default function Index({ pedidos }: Props) {
+export default function Index({ pedidos, filters }: Props) {
 
-  console.log(pedidos);
     const { deletePedido } = usePedidosCRUD();
+    const { search, setSearch, handleSearch } = useSearch(filters?.search || '');
+
 
   return (
     <AppLayout breadcrumbs={[{ title: 'Pedidos', href: '/pedidos' }]}>
@@ -48,7 +54,9 @@ export default function Index({ pedidos }: Props) {
           >
             Nuevo Pedido
           </Link>
-        <TablePedidos pedidos={pedidos} onDelete={deletePedido} />
+        <SearchComponent search={search} setSearch={setSearch} handleSearch={handleSearch} />
+        <TablePedidos pedidos={pedidos} onDelete={deletePedido} search={search} />
+        <Pagination links={pedidos.links} />
       </div>
     </AppLayout>
   );

@@ -17,9 +17,18 @@ class PedidoController extends Controller
     public function index()
     {
         try {
-            $pedidos = Pedido::with(['cliente', 'user', 'detalles'])->paginate(5);
+            $pedidos = Pedido::query()
+                ->with(['cliente', 'user', 'detalles'])
+                ->when(request('search'), function ($query, $search) {
+                    $query->where('id', 'like', "%{$search}%")
+                        ->orWhere('observacion', 'like', "%{$search}%")
+                        ->orWhereHas('cliente', fn($q) => $q->where('nombre_razon_social', 'like', "%{$search}%"));
+                        // ->orWhereHas('observacion', fn($q) => $q->where('observacion', 'like', "%{$search}%"));
+                })
+                ->paginate(5);
             return Inertia::render('Pedidos/Index', [
-                'pedidos' => $pedidos
+                'pedidos' => $pedidos,
+                'filters' => request()->only('search', 'sort', 'direction'),
             ]);
         } catch (Exception $e) {
             return response()->json([
