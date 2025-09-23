@@ -43,6 +43,7 @@ Route::middleware(['auth', SetUserId::class])->group(function () {
         Route::get('/', [PedidoController::class, 'index'])->name('pedidos.index');            // Listar pedidos
 
         Route::get('/create', [PedidoController::class, 'create'])->name('pedidos.create');     // Formulario para crear pedido
+        Route::get('/{pedido}/edit', [PedidoController::class, 'edit'])->name('pedidos.edit');   // Formulario para editar pedido
         Route::post('/store', [PedidoController::class, 'store'])->name('pedidos.store');      // Crear pedido
         Route::get('/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');     // Ver un pedido (opcional)
         Route::put('/update/{pedido}', [PedidoController::class, 'update'])->name('pedidos.update'); // Actualizar pedido

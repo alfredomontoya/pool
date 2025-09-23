@@ -46,6 +46,17 @@ class PedidoController extends Controller
         ]);
     }
 
+    public function edit(Pedido $pedido)
+    {
+        $pedido->load('detalles.producto', 'cliente');
+
+        $productos = Producto::orderBy('id', 'desc')->with('precioActivo')->get();
+        return Inertia::render('Pedidos/Edit', [
+            'pedido' => $pedido,
+            'productos' => $productos
+        ]);
+    }
+
     // Crear pedido con transacción y manejo de errores
     public function store(StorePedidoRequest $request): JsonResponse
     {

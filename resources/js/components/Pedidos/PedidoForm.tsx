@@ -1,6 +1,5 @@
-// PedidoForm.tsx
 import { FC, useEffect } from 'react';
-import { DetallePedido, PedidoFormData } from '@/interfaces/Pedidos.Interface';
+import { DetallePedido, Pedido, PedidoFormData } from '@/interfaces/Pedidos.Interface';
 import { Producto } from '@/interfaces/Productos.Interface';
 import ClienteAutocomplete from '../Clientes/ClienteAutocomplete';
 import PedidoDetalles from './PedidoDetalles';
@@ -13,7 +12,8 @@ interface Props {
   updateDetalle: (index: number, detalle: DetallePedido) => void;
   removeDetalle: (index: number) => void;
   onSubmit: () => void;
-  errors?: { [key: string]: string[] }; // errores de validación
+  errors?: { [key: string]: string[] };
+  pedido?: Pedido;
 }
 
 const PedidoForm: FC<Props> = ({
@@ -25,28 +25,43 @@ const PedidoForm: FC<Props> = ({
   removeDetalle,
   onSubmit,
   errors = {},
+  pedido
 }) => {
-
-  // Inicializar con los 3 primeros productos de la DB
+  // Inicializar datos si es edición
   useEffect(() => {
-    console.log('PedidoForm ')
-    console.log(productos)
-    if (form.detalles!.length === 0 && productos.length > 0) {
+    if (pedido) {
+      setData('cliente_id', String(pedido.cliente_id));
+      setData('fecha', pedido.fecha);
+      setData('estado', pedido.estado);
+      setData('observacion', pedido.observacion || '');
+      setData(
+        'detalles',
+        pedido.detalles.map((d) => ({
+          producto_id: String(d.producto_id),
+          cantidad: Number(d.cantidad),
+          precio: Number(d.precio),
+          subtotal: Number(d.subtotal),
+        }))
+      );
+    }
+  }, [pedido]);
+
+  // Inicializar con productos por defecto (solo en creación)
+  useEffect(() => {
+    if (!pedido && form.detalles!.length === 0 && productos.length > 0) {
       const iniciales: DetallePedido[] = productos.slice(0, 3).map((p) => {
         const precio = Number(p.precio_activo?.precio_venta ?? 0);
-        const cantidad = 0; // cantidad por defecto
         return {
           producto_id: String(p.id),
-          cantidad,
+          cantidad: 0,
           precio,
-          subtotal: precio * cantidad,
+          subtotal: 0,
         };
       });
       setData('detalles', iniciales);
     }
-  }, [form.detalles, productos, setData]);
+  }, [pedido, form.detalles, productos, setData]);
 
-  // Función para actualizar un detalle y recalcular subtotal
   const handleUpdateDetalle = (index: number, detalle: DetallePedido) => {
     const subtotal = detalle.cantidad * detalle.precio;
     updateDetalle(index, { ...detalle, subtotal });
@@ -57,7 +72,7 @@ const PedidoForm: FC<Props> = ({
       {/* Cliente */}
       <div>
         <label className="block font-bold">Cliente</label>
-        <ClienteAutocomplete form={form} setData={setData} />
+        <ClienteAutocomplete form={form} setData={setData} defaultCliente={pedido?.cliente ?? null} />
         {errors.cliente_id && <p className="text-red-500 text-sm">{errors.cliente_id[0]}</p>}
       </div>
 
@@ -94,7 +109,6 @@ const PedidoForm: FC<Props> = ({
         detalles={form.detalles}
         productos={productos}
         addDetalle={(detalle) => {
-          // calcular subtotal al agregar
           addDetalle({ ...detalle, subtotal: detalle.cantidad * detalle.precio });
         }}
         updateDetalle={handleUpdateDetalle}
@@ -119,7 +133,7 @@ const PedidoForm: FC<Props> = ({
         onClick={onSubmit}
         className="bg-green-500 text-white px-4 py-2 rounded mt-2"
       >
-        Guardar
+        {pedido ? 'Actualizar' : 'Guardar'}
       </button>
     </div>
   );

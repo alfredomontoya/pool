@@ -5,15 +5,25 @@ import { Cliente } from '@/interfaces/Clientes.Interface';
 interface Props {
   form: { cliente_id: string | null };
   setData: (key: 'cliente_id', value: string) => void;
+  defaultCliente?: Cliente | null; // <-- nuevo parámetro opcional
 }
 
-const ClienteAutocomplete: FC<Props> = ({ form, setData }) => {
+const ClienteAutocomplete: FC<Props> = ({ form, setData, defaultCliente }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Cliente[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isSelected, setIsSelected] = useState(false); // <-- nuevo flag
+  const [isSelected, setIsSelected] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Inicializar con cliente por defecto
+  useEffect(() => {
+    if (defaultCliente) {
+      setData('cliente_id', String(defaultCliente.id));
+      setQuery(`${defaultCliente.nombre_razon_social} - ${defaultCliente.propietario}`);
+      setIsSelected(true);
+    }
+  }, [defaultCliente, setData]);
 
   // Click fuera del componente
   useEffect(() => {
@@ -28,7 +38,7 @@ const ClienteAutocomplete: FC<Props> = ({ form, setData }) => {
 
   // Buscar clientes con debounce
   useEffect(() => {
-    if (query.length < 2 || isSelected) { // <-- no buscar si ya se seleccionó
+    if (query.length < 2 || isSelected) {
       setResults([]);
       setShowDropdown(false);
       return;
@@ -61,7 +71,7 @@ const ClienteAutocomplete: FC<Props> = ({ form, setData }) => {
     setQuery(cliente.nombre_razon_social + ' - ' + cliente.propietario);
     setShowDropdown(false);
     setResults([]);
-    setIsSelected(true); // <-- marcar como seleccionado
+    setIsSelected(true);
   };
 
   // Manejo de teclas
@@ -91,7 +101,7 @@ const ClienteAutocomplete: FC<Props> = ({ form, setData }) => {
         type="text"
         placeholder="Buscar cliente..."
         value={query}
-        onChange={e => handleChange(e.target.value)}
+        onChange={(e) => handleChange(e.target.value)}
         onKeyDown={handleKeyDown}
         className="border p-2 w-full"
       />

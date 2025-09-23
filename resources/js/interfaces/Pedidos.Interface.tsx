@@ -9,6 +9,7 @@ export interface Pedido {
   user?: { name: string };
   fecha: string;
   estado: 'pendiente' | 'confirmado' | 'cancelado' | 'entregado';
+  observacion?: string;
   total: number;
   detalles: DetallePedido[];
 }

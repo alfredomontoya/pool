@@ -15,7 +15,7 @@ class ProductoSeeder extends Seeder
         // Producto::factory()->count(15)->create();
         $productos = [
             // Mesas de billar (categoria_id = 1)
-            ['nombre' => 'Grange', 'categoria_id' => 1, 'descripcion' => 'Mesa estándar disponible para alquiler por una hora.'],
+            ['nombre' => 'Grande', 'categoria_id' => 1, 'descripcion' => 'Mesa estándar disponible para alquiler por una hora.'],
             ['nombre' => 'Mediano', 'categoria_id' => 1, 'descripcion' => 'Mesa profesional de alta calidad, alquiler por una hora.'],
             ['nombre' => 'Chico', 'categoria_id' => 1, 'descripcion' => 'Mesa doble ideal para grupos, alquiler por una hora.'],
 
@@ -56,7 +56,7 @@ class ProductoSeeder extends Seeder
             $producto = Producto::factory()->create($data);
         }
 
-        
+
         ProductoPrecio::factory(1)->create([
             'producto_id' => 1,
             'precio_venta' => 10.00,

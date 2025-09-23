@@ -19,8 +19,5 @@ class ClienteSeeder extends Seeder
             ->create();
         Cliente::factory(['nombre_razon_social' => 'Tigo', 'propietario' => 'Gabriela'])
             ->create();
-
-        Cliente::factory(['tipo_documento' => 'ci', 'numero_documento' => '0', 'nombre_razon_social' => 'Tigo', 'propietario' => 'Gabriela'])
-        ->create();
     }
 }

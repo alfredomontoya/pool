@@ -10,6 +10,8 @@ interface Props {
 
 const TablePedidos: FC<Props> = ({ pedidos, onDelete, search }) => {
   return (
+    <div className="overflow-x-auto bg-default rounded-lg shadow">
+
     <table className="min-w-full border">
       <thead>
         <tr className="">
@@ -32,7 +34,7 @@ const TablePedidos: FC<Props> = ({ pedidos, onDelete, search }) => {
             <td className="border px-4 py-2">{p.estado}</td>
             <td className="border px-4 py-2">{p.total}</td>
             <td className="border px-4 py-2 space-x-2">
-              <a href={`/pedidos/edit/${p.id}`} className="text-blue-500">Editar</a>
+              <a href={`/pedidos/${p.id}/edit`} className="text-blue-500">Editar</a>
               <button
                 onClick={() => onDelete(`/api/pedidos/${p.id}`, p.id)}
                 className="text-red-500"
@@ -44,6 +46,7 @@ const TablePedidos: FC<Props> = ({ pedidos, onDelete, search }) => {
         ))}
       </tbody>
     </table>
+    </div>
   );
 };
 
