@@ -2,6 +2,7 @@
 import { FC } from 'react';
 import { DetallePedido } from '@/interfaces/Pedidos.Interface';
 import { Producto } from '@/interfaces/Productos.Interface';
+import { Button } from '../ui/button';
 
 interface Props {
   detalles: DetallePedido[];
@@ -115,13 +116,14 @@ const PedidoDetalles: FC<Props> = ({detalles, productos, addDetalle, updateDetal
       </table>
       {/* {errors.detalles && <p className="text-red-500 text-sm">{errors.detalles[0]}</p>} */}
 
-      <button
+      <Button
         type="button"
         onClick={() => addDetalle({ producto_id: '', cantidad: 0, precio: 0, subtotal: 0 })}
-        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+        variant={'default'}
+        className="mt-2"
       >
         Agregar Detalle
-      </button>
+      </Button>
     </div>
   );
 };

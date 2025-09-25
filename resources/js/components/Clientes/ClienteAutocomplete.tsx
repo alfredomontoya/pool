@@ -5,7 +5,7 @@ import { Cliente } from '@/interfaces/Clientes.Interface';
 interface Props {
   form: { cliente_id: string | null };
   setData: (key: 'cliente_id', value: string) => void;
-  defaultCliente?: Cliente | null; // <-- nuevo parámetro opcional
+  defaultCliente?: Cliente | null;
 }
 
 const ClienteAutocomplete: FC<Props> = ({ form, setData, defaultCliente }) => {
@@ -16,14 +16,14 @@ const ClienteAutocomplete: FC<Props> = ({ form, setData, defaultCliente }) => {
   const [isSelected, setIsSelected] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Inicializar con cliente por defecto
+  // Inicializar con cliente por defecto (solo 1 vez o si cambia)
   useEffect(() => {
-    if (defaultCliente) {
+    if (defaultCliente && !isSelected) {
       setData('cliente_id', String(defaultCliente.id));
       setQuery(`${defaultCliente.nombre_razon_social} - ${defaultCliente.propietario}`);
       setIsSelected(true);
     }
-  }, [defaultCliente, setData]);
+  }, [defaultCliente, isSelected, setData]);
 
   // Click fuera del componente
   useEffect(() => {
@@ -68,7 +68,7 @@ const ClienteAutocomplete: FC<Props> = ({ form, setData, defaultCliente }) => {
   // Seleccionar cliente
   const selectCliente = (cliente: Cliente) => {
     setData('cliente_id', String(cliente.id));
-    setQuery(cliente.nombre_razon_social + ' - ' + cliente.propietario);
+    setQuery(`${cliente.nombre_razon_social} - ${cliente.propietario}`);
     setShowDropdown(false);
     setResults([]);
     setIsSelected(true);
@@ -85,7 +85,7 @@ const ClienteAutocomplete: FC<Props> = ({ form, setData, defaultCliente }) => {
       setActiveIndex((prev) => (prev - 1 + results.length) % results.length);
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      selectCliente(results[activeIndex]);
+      if (results[activeIndex]) selectCliente(results[activeIndex]);
     }
   };
 
@@ -110,9 +110,7 @@ const ClienteAutocomplete: FC<Props> = ({ form, setData, defaultCliente }) => {
           {results.map((cliente, index) => (
             <li
               key={cliente.id}
-              className={`p-2 cursor-pointer ${
-                index === activeIndex ? 'bg-blue-500 text-white' : ''
-              }`}
+              className={`p-2 cursor-pointer ${index === activeIndex ? 'bg-blue-500 text-white' : ''}`}
               onMouseEnter={() => setActiveIndex(index)}
               onClick={() => selectCliente(cliente)}
             >

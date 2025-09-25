@@ -1,4 +1,3 @@
-// import { useNavigate } from 'react-router-dom';
 import usePedido from '@/hooks/Pedido/usePedido';
 import { Pedido, PedidoFormData } from '@/interfaces/Pedidos.Interface';
 import usePedidosCRUD from '@/hooks/Pedido/usePedidosCRUD';
@@ -7,63 +6,46 @@ import AppLayout from '@/layouts/app-layout';
 import { Link, router } from '@inertiajs/react';
 import { Producto } from '@/interfaces/Productos.Interface';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface Props {
-    pedido: Pedido
-  productos: Producto[]
+  pedido: Pedido;
+  productos: Producto[];
 }
 
-
 export default function Edit({ productos, pedido }: Props) {
-  // Estado del formulario
   const { form, setData, addDetalle, updateDetalle, removeDetalle } = usePedido({
-    cliente_id: '',
-    user_id: '',
-    fecha: new Date().toISOString().split('T')[0],
-    estado: 'pendiente',
+    cliente_id: pedido.cliente_id ?? '',
+    user_id: pedido.user_id ?? '',
+    fecha: pedido.fecha ?? new Date().toISOString().split('T')[0],
+    estado: pedido.estado ?? 'pendiente',
     detalles: [],
-    observacion: ''
+    observacion: pedido.observacion ?? ''
   } as PedidoFormData);
 
-  const { createPedido } = usePedidosCRUD();
+  const { updatePedido } = usePedidosCRUD();
+  const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
 
-const [errors, setErrors] = useState<{ [key: string]: string[] }>({}); // 👈 estado para errores
-
-//   const navigate = useNavigate();
-
-  // Al enviar el formulario
   const handleSubmit = async () => {
-  try {
-    const result = await createPedido('/pedidos/store', form);
-    console.log('Pedido creado:', result);
-    setErrors({}); // limpiar errores si la creación fue exitosa
-    // navigate('/pedidos'); // redirigir a la lista de pedidos
-    alert('Pedido creado correctamente');
-    router.visit('/pedidos');
-  } catch (errors: any) {
-    // aquí recibimos directamente los errores de validación
-    console.log('Errores de validación:', errors);
-
-    // const mensajes = Object.values(errors).flat().join('\n');
-    // alert('Errores de validación:\n' + mensajes);
-    setErrors(errors); // actualizar el estado de errores
-  }
-};
+    try {
+      await updatePedido(`/pedidos/update/${pedido.id}`, form);
+      setErrors({});
+      alert('Pedido actualizado correctamente');
+      router.visit('/pedidos');
+    } catch (err: any) {
+      console.log('Errores de validación:', err);
+      setErrors(err);
+    }
+  };
 
   return (
     <AppLayout breadcrumbs={[{ title: 'Pedidos', href: '/pedidos' }]}>
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Editar Pedido {pedido.id}</h1>
-         <Link
-            href="/pedidos/create"
-            as="button"
-            method="get"
-            className="bg-green-500 text-white px-4 py-2 rounded"
-          >
-            Nuevo Pedido
-          </Link>
+        <Button variant={'default'} onClick={() => router.visit('/pedidos/create')} className="mb-4">
+          Nuevo Pedido
+        </Button>
 
-        {/* Componente formulario reutilizable */}
         <PedidoForm
           form={form}
           setData={setData}
@@ -73,7 +55,7 @@ const [errors, setErrors] = useState<{ [key: string]: string[] }>({}); // 👈 e
           onSubmit={handleSubmit}
           productos={productos}
           errors={errors}
-            pedido={pedido}
+          pedido={pedido}
         />
       </div>
     </AppLayout>

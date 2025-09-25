@@ -3,6 +3,7 @@ import { DetallePedido, Pedido, PedidoFormData } from '@/interfaces/Pedidos.Inte
 import { Producto } from '@/interfaces/Productos.Interface';
 import ClienteAutocomplete from '../Clientes/ClienteAutocomplete';
 import PedidoDetalles from './PedidoDetalles';
+import { Button } from '../ui/button';
 
 interface Props {
   form: PedidoFormData;
@@ -29,6 +30,7 @@ const PedidoForm: FC<Props> = ({
 }) => {
   // Inicializar datos si es edición
   useEffect(() => {
+    console.log('Pedido para edición:', pedido);
     if (pedido) {
       setData('cliente_id', String(pedido.cliente_id));
       setData('fecha', pedido.fecha);
@@ -44,10 +46,11 @@ const PedidoForm: FC<Props> = ({
         }))
       );
     }
-  }, [pedido]);
+  }, [pedido?.id]);
 
   // Inicializar con productos por defecto (solo en creación)
   useEffect(() => {
+    console.log('Productos disponibles:', productos);
     if (!pedido && form.detalles!.length === 0 && productos.length > 0) {
       const iniciales: DetallePedido[] = productos.slice(0, 3).map((p) => {
         const precio = Number(p.precio_activo?.precio_venta ?? 0);
@@ -60,7 +63,7 @@ const PedidoForm: FC<Props> = ({
       });
       setData('detalles', iniciales);
     }
-  }, [pedido, form.detalles, productos, setData]);
+  }, [pedido, productos]);
 
   const handleUpdateDetalle = (index: number, detalle: DetallePedido) => {
     const subtotal = detalle.cantidad * detalle.precio;
@@ -68,7 +71,7 @@ const PedidoForm: FC<Props> = ({
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 space-y-4">
       {/* Cliente */}
       <div>
         <label className="block font-bold">Cliente</label>
@@ -128,13 +131,13 @@ const PedidoForm: FC<Props> = ({
       </div>
 
       {/* Botón Guardar */}
-      <button
+      <Button
         type="button"
         onClick={onSubmit}
-        className="bg-green-500 text-white px-4 py-2 rounded mt-2"
+        variant={'default'}
       >
         {pedido ? 'Actualizar' : 'Guardar'}
-      </button>
+      </Button>
     </div>
   );
 };

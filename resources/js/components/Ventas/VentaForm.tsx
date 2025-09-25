@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Cliente } from "@/interfaces/Clientes.Interface";
 import { TipoPago, Venta } from "@/interfaces/Venta.Interface";
 import { Producto } from "@/interfaces/Productos.Interface";
-import { DetalleVenta, VentaPayload } from "@/interfaces/VentaPayload";
+import { DetalleVenta, VentaPayload } from "@/interfaces/Venta.Interface";
 
 interface Props {
   venta?: Venta;

@@ -51,7 +51,7 @@ export default function usePedidosCRUD() {
   const updatePedido = async (url: string, form: PedidoFormData): Promise<void> => {
     try {
       await axios.put(url, form);
-      await fetchPedidos(url.replace(`/update/${form['id']}`, ''));
+    //   await fetchPedidos(url.replace(`/update/${form['id']}`, ''));
     } catch (error) {
       console.error('Error al actualizar pedido', error);
     }

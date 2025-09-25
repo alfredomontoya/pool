@@ -25,6 +25,10 @@ class PedidoController extends Controller
                         ->orWhereHas('cliente', fn($q) => $q->where('nombre_razon_social', 'like', "%{$search}%"));
                         // ->orWhereHas('observacion', fn($q) => $q->where('observacion', 'like', "%{$search}%"));
                 })
+                ->orderBy(
+                    request('sort', 'id') ?? 'id',
+                    request('direction', 'desc') ?? 'desc'
+                )
                 ->paginate(5);
             return Inertia::render('Pedidos/Index', [
                 'pedidos' => $pedidos,

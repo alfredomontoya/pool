@@ -23,11 +23,12 @@ import TablePedidos from './TablePedidos';
 import { Pedido } from '@/interfaces/Pedidos.Interface';
 import AppLayout from '@/layouts/app-layout';
 import { Paginated } from '@/interfaces/Venta.Interface';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import SearchComponent from '@/components/helpers/SearchComponent';
 import Pagination from '@/components/Pagination';
 import usePedido from '@/hooks/Pedido/usePedido';
 import useSearch from '@/hooks/Pedido/useSearch';
+import { Button } from '@/components/ui/button';
 // import TablePedidos from './components/TablePedidos';
 
 
@@ -46,14 +47,10 @@ export default function Index({ pedidos, filters }: Props) {
     <AppLayout breadcrumbs={[{ title: 'Pedidos', href: '/pedidos' }]}>
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Pedidos</h1>
-         <Link
-            href="/pedidos/create"
-            as="button"
-            method="get"
-            className="bg-green-500 text-white px-4 py-2 rounded"
-          >
-            Nuevo Pedido
-          </Link>
+        <Button variant={'default'} onClick={() => router.visit('/pedidos/create')} className="mb-4">
+          Nuevo Pedido
+        </Button>
+
         <SearchComponent search={search} setSearch={setSearch} handleSearch={handleSearch} />
         <TablePedidos pedidos={pedidos} onDelete={deletePedido} search={search} />
         <Pagination links={pedidos.links} />
